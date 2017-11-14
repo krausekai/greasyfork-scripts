@@ -1,0 +1,17 @@
+When answering questions on Quizlet's 'Write' screen, this script will block the screen from continuing to the next question due to (accidental) clicks and button presses.
+
+Additionally, with this script, it is now possible to control this screen with only the keyboard:
+Enter: Submit answer.
+Space: Override answer.
+
+<hr />
+<b>Support</b>
+	A) Please use the "Feedback" tab above, or
+	B) Email me at: <a href="mailto:kaikrause95@gmail.com">kaikrause95@gmail.com</a>.
+<hr />
+<b>Donations</b>
+	If this script is helpful, please consider supporting me and development. Thank you very much!
+	<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=kaikrause95%40gmail%2ecom&lc=AU&item_name=Kai%20Krause%20%28krausekai%2fkainokage%29&currency_code=AUD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted">
+	<img src="https://i.imgur.com/9bAlUVi.png"></img>
+	Donate with Paypal
+</a>
