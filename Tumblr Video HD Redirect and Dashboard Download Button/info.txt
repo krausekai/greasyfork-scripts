@@ -1,4 +1,4 @@
-Download button will only display on the dashboard and your/other's like pages. This is due to a browser security issue with blogs (iframe cross-origin/XSS).
+Display download buttons below all Tumblr videos:
 
 <img src="https://i.imgur.com/E2VJ4lU.png">
 

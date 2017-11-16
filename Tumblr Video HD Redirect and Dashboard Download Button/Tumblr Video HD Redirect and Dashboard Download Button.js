@@ -1,13 +1,14 @@
 // ==UserScript==
-// @name         Tumblr Video HD Redirect and Dashboard Download Button
+// @name         Tumblr HD Video Download Buttons
 // @namespace    TumblrVideoReszr
-// @description  Automatically redirect Tumblr video links to raw HD versions, and display a download button below videos on the dashboard
-// @version      1.0
+// @description  Automatically redirect Tumblr video links to raw HD versions, and display a download button below videos
+// @version      1.1
 // @author       Kai Krause <kaikrause95@gmail.com>
 // @match        http://*.tumblr.com/*
 // @match        https://*.tumblr.com/*
 // @run-at       document-start
-// @grant        none
+// @grant        GM_xmlhttpRequest
+// @connect      tumblr.com
 // ==/UserScript==
 
 // Typical Video URL Patterns:
@@ -16,6 +17,10 @@
 // https://vt.tumblr.com/tumblr_ID_NUM.mp4
 
 var loc = location.toString();
+
+// ----------------------------------------
+// DIRECT MP4 URLS
+// ----------------------------------------
 
 function redirectToHD() {
 	// Check that the URL is a ~.mp4
@@ -37,15 +42,21 @@ function redirectToHD() {
 }
 redirectToHD();
 
-function createDownloadButtons() {
-	// Get all tumblr posts on dashboard page. Cannot access blog videos because they are cross-origin iframes.
-	if (loc.includes('tumblr.com/dashboard') || loc.includes('tumblr.com/like')) { } else { return; }
-	var posts = document.getElementsByClassName('post_media');
+// ----------------------------------------
+// DOWNLOAD BUTTON STYLE
+// ----------------------------------------
 
-	// Create the button style
-	var downloadButtonStyle = document.createElement("style");
-	downloadButtonStyle.innerText = ".videoDownloadButtonStyle_kk{display:block; width:100%; height:100%; padding:4px; border:2px solid #979EA8; background-color:#2F3D51; color: #979EA8; font-weight: 600; text-align: center;} .videoDownloadButtonStyle_kk:hover{color:#F5F5F5;}";
-	document.head.appendChild(downloadButtonStyle);
+// Create the button style
+var downloadButtonStyle = document.createElement("style");
+downloadButtonStyle.innerText = ".videoDownloadButtonStyle_kk{display:block; width:100%; height:100%; padding:4px; border:2px solid #979EA8; background-color:#2F3D51; color: #979EA8 !important; font-weight: 600 !important; text-align: center; text-decoration: none !important} .videoDownloadButtonStyle_kk:hover{color:#F5F5F5 !important;}";
+document.head.appendChild(downloadButtonStyle);
+
+// ----------------------------------------
+// DASHBOARD BUTTONS
+// ----------------------------------------
+
+function dashboardDownloadButtons() {
+	var posts = document.getElementsByClassName('post_media');
 
 	for (var i = 0; i < posts.length; ++i) {
 		var videos = posts[i].getElementsByTagName('video');
@@ -53,7 +64,7 @@ function createDownloadButtons() {
 			for (var a = 0; a < videos.length; ++a) {
 				// if the button already exists, ignore this post
 				var btnCheck = posts[i].getElementsByClassName('videoDownloadButtonStyle_kk');
-				if (btnCheck[0]) break;
+				if (btnCheck[0]) continue;
 
 				// Create the button
 				var downloadButton = document.createElement('a');
@@ -84,11 +95,71 @@ function createDownloadButtons() {
 		}
 	}
 }
-// For endless scrolling users
-window.addEventListener("scroll", createDownloadButtons, false);
+if (loc.includes('tumblr.com/dashboard') || loc.includes('tumblr.com/like')) {
+	window.addEventListener("DOMContentLoaded", function load() {
+		window.removeEventListener("DOMContentLoaded", load, false);
+		// For initial page load
+		dashboardDownloadButtons();
+		// For endless scrolling users
+		window.addEventListener("scroll", dashboardDownloadButtons, false);
+	}, false);
+}
 
-// For initial page load
-window.addEventListener("DOMContentLoaded", function load() {
-	window.removeEventListener("DOMContentLoaded", load, false);
-	createDownloadButtons();
-}, false);
+// ----------------------------------------
+// BLOG BUTTONS
+// ----------------------------------------
+
+function req (postNum, video) {
+	GM_xmlhttpRequest({
+		url: video,
+		method: 'GET',
+		onload: function(response) {
+			if (response.status == '200' && response.responseText) {
+				var text = response.responseText;
+				var a = text.match("\/tumblr_*.+_smart1.");
+				var videoUrl = "https://vt.tumblr.com" + a[0].toString() + "mp4";
+				videoUrl = videoUrl.replace("_smart1", "");
+				embedBlogDownloadButtons(postNum, videoUrl);
+			}
+		}
+	});
+}
+var postCache = [];
+function blogDownloadButtons() {
+	var posts = document.getElementsByClassName('tumblr_video_container');
+	for (var i = 0; i < posts.length; i++) {
+		// if the button already exists, ignore this post
+		var btnCheck = posts[i].getElementsByClassName('videoDownloadButtonStyle_kk');
+		if (postCache.indexOf(posts[i].id) > -1 || btnCheck[0]) continue;
+		// Cache the current post ID
+		postCache.push(posts[i].id);
+
+		// Get the iframe of this post, which has the video URL
+		var frames = posts[i].getElementsByTagName("iframe");
+		var frame = frames[0];
+		if (frame.src.includes("/video/")) {
+			// Get the video url via a crossDomain request from the iframe
+			req(i, frame.src);
+		}
+	}
+}
+function embedBlogDownloadButtons (postNum, videoURL) {
+	var posts = document.getElementsByClassName('tumblr_video_container');
+	var post = posts[postNum];
+	// Create the button
+	var downloadButton = document.createElement('a');
+	downloadButton.innerText = 'Download This Video (HD)';
+	// Set and style the download button
+	downloadButton.setAttribute('class', 'videoDownloadButtonStyle_kk');
+	downloadButton.setAttribute('href', videoURL);
+	post.appendChild(downloadButton);
+}
+if (location.hostname.includes('tumblr.com') && location.hostname != 'tumblr.com') {
+	window.addEventListener("DOMContentLoaded", function load() {
+		window.removeEventListener("DOMContentLoaded", load, false);
+		// For initial page load
+		blogDownloadButtons();
+		// For endless scrolling users
+		window.addEventListener("scroll", blogDownloadButtons, false);
+	}, false);
+}
