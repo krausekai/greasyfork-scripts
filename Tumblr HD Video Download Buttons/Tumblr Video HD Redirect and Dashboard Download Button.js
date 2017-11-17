@@ -2,7 +2,7 @@
 // @name         Tumblr HD Video Download Buttons
 // @namespace    TumblrVideoReszr
 // @description  Automatically redirect Tumblr video links to raw HD versions, and display a download button below videos
-// @version      1.1
+// @version      1.2
 // @author       Kai Krause <kaikrause95@gmail.com>
 // @match        http://*.tumblr.com/*
 // @match        https://*.tumblr.com/*
@@ -90,6 +90,7 @@ function dashboardDownloadButtons() {
 				// Set and style the download button
 				downloadButton.setAttribute('class', 'videoDownloadButtonStyle_kk');
 				downloadButton.setAttribute('href', videoURL);
+				downloadButton.setAttribute('target', '_blank');
 				posts[i].appendChild(downloadButton);
 			}
 		}
@@ -108,18 +109,26 @@ if (loc.includes('tumblr.com/dashboard') || loc.includes('tumblr.com/like')) {
 // ----------------------------------------
 // BLOG BUTTONS
 // ----------------------------------------
-
+var eDisplay = false;
 function req (postNum, video) {
 	GM_xmlhttpRequest({
 		url: video,
 		method: 'GET',
 		onload: function(response) {
 			if (response.status == '200' && response.responseText) {
-				var text = response.responseText;
-				var a = text.match("\/tumblr_*.+_smart1.");
-				var videoUrl = "https://vt.tumblr.com" + a[0].toString() + "mp4";
-				videoUrl = videoUrl.replace("_smart1", "");
-				embedBlogDownloadButtons(postNum, videoUrl);
+				try {
+					var text = response.responseText;
+					var a = text.match("previews.+tumblr_.+filmstrip\.");
+					a[0] = a[0].replace("previews\\", "");
+					a[0] = a[0].replace("_filmstrip", "");
+					var videoUrl = "https://vt.tumblr.com" + a[0].toString() + "mp4";
+					embedBlogDownloadButtons(postNum, videoUrl);
+				} catch (e) {
+					if (!eDisplay) {
+						window.alert("There was a problem embedding video download buttons. Please report this at the below site. （動画を保存するボタンを埋め込む問題が発生しました。この問題を下のサイトまで報告してください。）\n\nhttps://greasyfork.org/en/scripts/32038-tumblr-hd-video-download-buttons\n\n" + "The problem is (発生した問題は):\n" + e)
+						eDisplay = true;
+					}
+				}
 			}
 		}
 	});
@@ -152,6 +161,7 @@ function embedBlogDownloadButtons (postNum, videoURL) {
 	// Set and style the download button
 	downloadButton.setAttribute('class', 'videoDownloadButtonStyle_kk');
 	downloadButton.setAttribute('href', videoURL);
+	downloadButton.setAttribute('target', '_blank');
 	post.appendChild(downloadButton);
 }
 if (location.hostname.includes('tumblr.com') && location.hostname != 'tumblr.com') {
