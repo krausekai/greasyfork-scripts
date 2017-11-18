@@ -2,7 +2,7 @@
 // @name         Tumblr HD Video Download Buttons
 // @namespace    TumblrVideoReszr
 // @description  Automatically redirect Tumblr video links to raw HD versions, and display a download button below videos
-// @version      1.2
+// @version      1.3
 // @author       Kai Krause <kaikrause95@gmail.com>
 // @match        http://*.tumblr.com/*
 // @match        https://*.tumblr.com/*
@@ -48,7 +48,7 @@ redirectToHD();
 
 // Create the button style
 var downloadButtonStyle = document.createElement("style");
-downloadButtonStyle.innerText = ".videoDownloadButtonStyle_kk{display:block; width:100%; height:100%; padding:4px; border:2px solid #979EA8; background-color:#2F3D51; color: #979EA8 !important; font-weight: 600 !important; text-align: center; text-decoration: none !important} .videoDownloadButtonStyle_kk:hover{color:#F5F5F5 !important;}";
+downloadButtonStyle.innerText = ".videoDownloadButtonStyle_kk{display:block !important; width:100% !important; height:20px !important; padding:4px !important; border:2px solid #979EA8 !important; background-color:#2F3D51 !important; color: #979EA8 !important; font-weight: 600 !important; text-align: center !important; text-decoration: none !important} .videoDownloadButtonStyle_kk:hover{color:#F5F5F5 !important;}";
 document.head.appendChild(downloadButtonStyle);
 
 // ----------------------------------------
@@ -125,7 +125,7 @@ function req (postNum, video) {
 					embedBlogDownloadButtons(postNum, videoUrl);
 				} catch (e) {
 					if (!eDisplay) {
-						window.alert("There was a problem embedding video download buttons. Please report this at the below site. （動画を保存するボタンを埋め込む問題が発生しました。この問題を下のサイトまで報告してください。）\n\nhttps://greasyfork.org/en/scripts/32038-tumblr-hd-video-download-buttons\n\n" + "The problem is (発生した問題は):\n" + e)
+						window.alert("There was a problem embedding video download buttons. Please report this at the below site. （動画を保存するボタンを埋め込む問題が発生しました。この問題を下のサイトまで報告してください。）\n\nhttps://greasyfork.org/en/scripts/32038-tumblr-hd-video-download-buttons\n\n" + "The problem is (発生した問題は):\n" + e);
 						eDisplay = true;
 					}
 				}
