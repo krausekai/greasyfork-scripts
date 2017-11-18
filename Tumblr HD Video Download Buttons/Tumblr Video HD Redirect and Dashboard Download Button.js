@@ -2,7 +2,7 @@
 // @name         Tumblr HD Video Download Buttons
 // @namespace    TumblrVideoReszr
 // @description  Automatically redirect Tumblr video links to raw HD versions, and display a download button below videos
-// @version      1.3
+// @version      1.5
 // @author       Kai Krause <kaikrause95@gmail.com>
 // @match        http://*.tumblr.com/*
 // @match        https://*.tumblr.com/*
@@ -110,7 +110,7 @@ if (loc.includes('tumblr.com/dashboard') || loc.includes('tumblr.com/like')) {
 // BLOG BUTTONS
 // ----------------------------------------
 var eDisplay = false;
-function req (postNum, video) {
+function req (videoNum, video) {
 	GM_xmlhttpRequest({
 		url: video,
 		method: 'GET',
@@ -118,11 +118,12 @@ function req (postNum, video) {
 			if (response.status == '200' && response.responseText) {
 				try {
 					var text = response.responseText;
-					var a = text.match("previews.+tumblr_.+filmstrip\.");
+					var a = text.match("previews.+tumblr_.+filmstrip\.") || text.match("\/tumblr_.+frame1\.");
 					a[0] = a[0].replace("previews\\", "");
 					a[0] = a[0].replace("_filmstrip", "");
+					a[0] = a[0].replace("_frame1", "");
 					var videoUrl = "https://vt.tumblr.com" + a[0].toString() + "mp4";
-					embedBlogDownloadButtons(postNum, videoUrl);
+					embedBlogDownloadButtons(videoNum, videoUrl);
 				} catch (e) {
 					if (!eDisplay) {
 						window.alert("There was a problem embedding video download buttons. Please report this at the below site. （動画を保存するボタンを埋め込む問題が発生しました。この問題を下のサイトまで報告してください。）\n\nhttps://greasyfork.org/en/scripts/32038-tumblr-hd-video-download-buttons\n\n" + "The problem is (発生した問題は):\n" + e);
@@ -133,28 +134,30 @@ function req (postNum, video) {
 		}
 	});
 }
-var postCache = [];
+var videoCache = [];
 function blogDownloadButtons() {
-	var posts = document.getElementsByClassName('tumblr_video_container');
-	for (var i = 0; i < posts.length; i++) {
-		// if the button already exists, ignore this post
-		var btnCheck = posts[i].getElementsByClassName('videoDownloadButtonStyle_kk');
-		if (postCache.indexOf(posts[i].id) > -1 || btnCheck[0]) continue;
-		// Cache the current post ID
-		postCache.push(posts[i].id);
+	// Get the iframe of this post, which has the video URL
+	var frames = document.getElementsByTagName("iframe");
+	for (var i = 0; i < frames.length; i++) {
+		var frame = frames[i];
 
-		// Get the iframe of this post, which has the video URL
-		var frames = posts[i].getElementsByTagName("iframe");
-		var frame = frames[0];
-		if (frame.src.includes("/video/")) {
-			// Get the video url via a crossDomain request from the iframe
-			req(i, frame.src);
-		}
+		// Check whether this is a video
+		if (!frame.src.includes("/video/")) continue;
+		// if the button already exists, ignore this post
+		var frameParent = frame.parentNode;
+		var btnCheck = frameParent.getElementsByClassName('videoDownloadButtonStyle_kk');
+		if (videoCache.indexOf(frame.src) > -1 || btnCheck[0]) continue;
+		// Cache the current post ID
+		videoCache.push(frame.src);
+
+		// Get the video url via a crossDomain request from the iframe
+		req(i, frame.src);
 	}
 }
-function embedBlogDownloadButtons (postNum, videoURL) {
-	var posts = document.getElementsByClassName('tumblr_video_container');
-	var post = posts[postNum];
+function embedBlogDownloadButtons (videoNum, videoURL) {
+	var frames = document.getElementsByTagName("iframe");
+	var frame = frames[videoNum];
+	var frameParent = frame.parentNode;
 	// Create the button
 	var downloadButton = document.createElement('a');
 	downloadButton.innerText = 'Download This Video (HD)';
@@ -162,7 +165,7 @@ function embedBlogDownloadButtons (postNum, videoURL) {
 	downloadButton.setAttribute('class', 'videoDownloadButtonStyle_kk');
 	downloadButton.setAttribute('href', videoURL);
 	downloadButton.setAttribute('target', '_blank');
-	post.appendChild(downloadButton);
+	frameParent.appendChild(downloadButton);
 }
 if (location.hostname.includes('tumblr.com') && location.hostname != 'tumblr.com') {
 	window.addEventListener("DOMContentLoaded", function load() {
