@@ -48,7 +48,7 @@ redirectToHD();
 
 // Create the button style
 var downloadButtonStyle = document.createElement("style");
-downloadButtonStyle.innerText = ".videoDownloadButtonStyle_kk{display:block !important; width:100% !important; height:20px !important; padding:4px !important; border:2px solid #979EA8 !important; background-color:#2F3D51 !important; color: #979EA8 !important; font-weight: 600 !important; text-align: center !important; text-decoration: none !important} .videoDownloadButtonStyle_kk:hover{color:#F5F5F5 !important;}";
+downloadButtonStyle.innerText = ".dashboard_kk{height:30px !important;} .blog_kk{height:20px !important;} .videoDownloadButtonStyle_kk{display:block !important; width:100% !important; padding:4px !important; border:2px solid #979EA8 !important; background-color:#2F3D51 !important; color: #979EA8 !important; font-weight: 600 !important; text-align: center !important; text-decoration: none !important} .videoDownloadButtonStyle_kk:hover{color:#F5F5F5 !important;}";
 document.head.appendChild(downloadButtonStyle);
 
 // ----------------------------------------
@@ -65,10 +65,6 @@ function dashboardDownloadButtons() {
 				// if the button already exists, ignore this post
 				var btnCheck = posts[i].getElementsByClassName('videoDownloadButtonStyle_kk');
 				if (btnCheck[0]) continue;
-
-				// Create the button
-				var downloadButton = document.createElement('a');
-				downloadButton.innerText = 'Download This Video (HD)';
 
 				// Generate the video URL
 				var videoURL;
@@ -87,8 +83,11 @@ function dashboardDownloadButtons() {
 					continue;
 				}
 
+				// Create the button
+				var downloadButton = document.createElement('a');
+				downloadButton.innerText = 'Download This Video (HD)';
 				// Set and style the download button
-				downloadButton.setAttribute('class', 'videoDownloadButtonStyle_kk');
+				downloadButton.setAttribute('class', 'videoDownloadButtonStyle_kk dashboard_kk');
 				downloadButton.setAttribute('href', videoURL);
 				downloadButton.setAttribute('target', '_blank');
 				posts[i].appendChild(downloadButton);
@@ -151,7 +150,8 @@ function blogDownloadButtons() {
 		videoCache.push(frame.src);
 
 		// Get the video url via a crossDomain request from the iframe
-		req(i, frame.src);
+		var videoNum = i;
+		req(videoNum, frame.src);
 	}
 }
 function embedBlogDownloadButtons (videoNum, videoURL) {
@@ -162,7 +162,7 @@ function embedBlogDownloadButtons (videoNum, videoURL) {
 	var downloadButton = document.createElement('a');
 	downloadButton.innerText = 'Download This Video (HD)';
 	// Set and style the download button
-	downloadButton.setAttribute('class', 'videoDownloadButtonStyle_kk');
+	downloadButton.setAttribute('class', 'videoDownloadButtonStyle_kk blog_kk');
 	downloadButton.setAttribute('href', videoURL);
 	downloadButton.setAttribute('target', '_blank');
 	frameParent.appendChild(downloadButton);
