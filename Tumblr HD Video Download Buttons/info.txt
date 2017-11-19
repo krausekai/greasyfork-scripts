@@ -1,21 +1,18 @@
-Display download buttons below all Tumblr videos:
+<table>
+<tr>
+<td>
+If this script is helpful, please consider supporting me and development. <br />Thank you very much! - Kai, <a href="mailto:kaikrause95@gmail.com">kaikrause95@gmail.com</a>
+</td>
+<td>
+<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=kaikrause95%40gmail%2ecom&lc=AU&item_name=Kai%20Krause%20%28krausekai%2fkainokage%29&currency_code=AUD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted"><img src="https://i.imgur.com/LDY0zOy.png"></img></a>
+</td>
+</tr>
+</table>
+
+<hr />
+
+Display download buttons below Tumblr videos:
 
 <img src="https://i.imgur.com/E2VJ4lU.png">
 
-See also:
-<ul>
-<li><a href="https://greasyfork.org/en/scripts/31593-tumblr-images-to-hd-redirector">Tumblr Images to HD Redirector</a></li>
-<li><a href="https://greasyfork.org/en/scripts/32493-gfycat-redirect-to-webm-video-file">GfyCat Redirect to WebM Video File</a></li>
-</ul>
-
-<hr />
-<b>Support</b>
-	A) Please use the "Feedback" tab above, or
-	B) Email me at: <a href="mailto:kaikrause95@gmail.com">kaikrause95@gmail.com</a>.
-<hr />
-<b>Donations</b>
-	If this script is helpful, please consider supporting me and development. Thank you very much!
-	<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=kaikrause95%40gmail%2ecom&lc=AU&item_name=Kai%20Krause%20%28krausekai%2fkainokage%29&currency_code=AUD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted">
-	<img src="https://i.imgur.com/9bAlUVi.png"></img>
-	Donate with Paypal
-</a>
+See also: <a href="https://greasyfork.org/en/scripts/31593-tumblr-images-to-hd-redirector">Tumblr Images to HD Redirector</a> | <a href="https://greasyfork.org/en/scripts/32493-gfycat-redirect-to-webm-video-file">GfyCat Redirect to WebM Video File</a>
