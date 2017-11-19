@@ -2,7 +2,7 @@
 // @name         Tumblr HD Video Download Buttons
 // @namespace    TumblrVideoReszr
 // @description  Automatically redirect Tumblr video links to raw HD versions, and display a download button below videos
-// @version      1.6
+// @version      1.7
 // @author       Kai Krause <kaikrause95@gmail.com>
 // @match        http://*.tumblr.com/*
 // @match        https://*.tumblr.com/*
@@ -48,7 +48,7 @@ redirectToHD();
 
 // Create the button style
 var downloadButtonStyle = document.createElement("style");
-downloadButtonStyle.innerText = ".dashboard_kk{height:30px !important;} .blog_kk{height:20px !important;} .videoDownloadButtonStyle_kk{display:block !important; width:100% !important; padding:4px !important; border:2px solid #979EA8 !important; background-color:#2F3D51 !important; color: #979EA8 !important; font-weight: 600 !important; text-align: center !important; text-decoration: none !important} .videoDownloadButtonStyle_kk:hover{color:#F5F5F5 !important;}";
+downloadButtonStyle.innerText = ".videoDownloadButtonStyle_kk{display:table !important; width:100% !important; padding:4px !important; border:2px solid #979EA8 !important; background-color:#2F3D51 !important; color: #979EA8 !important; font-weight: 600 !important; text-align: center !important; text-decoration: none !important} .videoDownloadButtonStyle_kk:hover{color:#F5F5F5 !important;}";
 document.head.appendChild(downloadButtonStyle);
 
 // ----------------------------------------
@@ -87,7 +87,7 @@ function dashboardDownloadButtons() {
 				var downloadButton = document.createElement('a');
 				downloadButton.innerText = 'Download This Video (HD)';
 				// Set and style the download button
-				downloadButton.setAttribute('class', 'videoDownloadButtonStyle_kk dashboard_kk');
+				downloadButton.setAttribute('class', 'videoDownloadButtonStyle_kk');
 				downloadButton.setAttribute('href', videoURL);
 				downloadButton.setAttribute('target', '_blank');
 				posts[i].appendChild(downloadButton);
@@ -162,7 +162,7 @@ function embedBlogDownloadButtons (videoNum, videoURL) {
 	var downloadButton = document.createElement('a');
 	downloadButton.innerText = 'Download This Video (HD)';
 	// Set and style the download button
-	downloadButton.setAttribute('class', 'videoDownloadButtonStyle_kk blog_kk');
+	downloadButton.setAttribute('class', 'videoDownloadButtonStyle_kk');
 	downloadButton.setAttribute('href', videoURL);
 	downloadButton.setAttribute('target', '_blank');
 	frameParent.appendChild(downloadButton);
