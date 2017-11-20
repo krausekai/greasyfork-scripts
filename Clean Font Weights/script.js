@@ -2,14 +2,14 @@
 // @name         Clean Font Weights
 // @namespace    cleanFonts_kk
 // @description  Make website font-weights standard (400) if below 400
-// @version      0.2
+// @version      0.3
 // @author       Kai Krause <kaikrause95@gmail.com>
 // @include      *
-// @run-at       document-start
+// @run-at       document-end
 // @grant        none
 // ==/UserScript==
 
-setInterval(function(){
+function font() {
 	// create the font
 	var fontOverride_kk = document.createElement("style");
 	fontOverride_kk.innerText = ".fontOverride_kk{font-weight: 400 !important;}";
@@ -24,4 +24,10 @@ setInterval(function(){
 			allElements[i].classList.add("fontOverride_kk");
 		}
 	}
-}, 10000);
+}
+
+font();
+
+setInterval(function(){
+	font();
+}, 8000);
