@@ -32,10 +32,13 @@ font();
 
 // Peformant Dynamic function wrapper
 var oldScrollPos = 0;
-window.addEventListener("scroll", (function(){
-	var scrollDifference = Math.abs(oldScrollPos-window.scrollY);
-	if (scrollDifference > 1000) {
-		window.requestAnimationFrame(font);
-		oldScrollPos = window.scrollY;
-	}
-}), false);
+function dynamicScroll (f) {
+	window.addEventListener("scroll", (function(){
+		var scrollDifference = Math.abs(oldScrollPos-window.scrollY);
+		if (scrollDifference > 1000) {
+			window.requestAnimationFrame(f);
+			oldScrollPos = window.scrollY;
+		}
+	}), false);
+}
+dynamicScroll(font);
