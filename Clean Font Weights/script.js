@@ -2,20 +2,21 @@
 // @name         Clean Font Weights
 // @namespace    cleanFonts_kk
 // @description  Make website font-weights standard (400) if below 400
-// @version      0.3
+// @version      0.4
 // @author       Kai Krause <kaikrause95@gmail.com>
 // @include      *
-// @run-at       document-end
+// @run-at       document-idle
 // @grant        none
 // ==/UserScript==
 
 function font() {
-	// create the font
-	var fontOverride_kk = document.createElement("style");
-	fontOverride_kk.innerText = ".fontOverride_kk{font-weight: 400 !important;}";
-	document.head.appendChild(fontOverride_kk);
+	var fontCheck = document.getElementsByClassName("fontOverride_kk");
+	if (fontCheck.length == 0) {
+		var fontOverride_kk = document.createElement("style");
+		fontOverride_kk.innerText = ".fontOverride_kk{font-weight: 400 !important;}";
+		document.head.appendChild(fontOverride_kk);
+	}
 
-	// Get classes and tags without classes
 	var allElements = document.querySelectorAll('*');
 	for (var i = 0; i < allElements.length; i++) {
 		var css = window.getComputedStyle(allElements[i], null);
@@ -26,8 +27,15 @@ function font() {
 	}
 }
 
+// Page Load
 font();
 
-setInterval(function(){
-	font();
-}, 8000);
+// Peformant Dynamic function wrapper
+var oldScrollPos = 0;
+window.addEventListener("scroll", (function(){
+	var scrollDifference = Math.abs(oldScrollPos-window.scrollY);
+	if (scrollDifference > 1000) {
+		window.requestAnimationFrame(font);
+		oldScrollPos = window.scrollY;
+	}
+}), false);
