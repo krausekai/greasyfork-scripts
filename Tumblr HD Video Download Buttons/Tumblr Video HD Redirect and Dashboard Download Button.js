@@ -2,7 +2,7 @@
 // @name         Tumblr HD Video Download Buttons
 // @namespace    TumblrVideoReszr
 // @description  Automatically redirect Tumblr video links to raw HD versions, and display a download button below videos
-// @version      1.7
+// @version      1.8
 // @author       Kai Krause <kaikrause95@gmail.com>
 // @match        http://*.tumblr.com/*
 // @match        https://*.tumblr.com/*
@@ -50,6 +50,22 @@ redirectToHD();
 var downloadButtonStyle = document.createElement("style");
 downloadButtonStyle.innerText = ".videoDownloadButtonStyle_kk{display:table !important; width:100% !important; padding:4px !important; border:2px solid #979EA8 !important; background-color:#2F3D51 !important; color: #979EA8 !important; font-weight: 600 !important; text-align: center !important; text-decoration: none !important} .videoDownloadButtonStyle_kk:hover{color:#F5F5F5 !important;}";
 document.head.appendChild(downloadButtonStyle);
+
+// ----------------------------------------
+// HELPER FUNCTIONS
+// ----------------------------------------
+
+// Peformant Dynamic function wrapper
+var oldScrollPos = 0;
+function dynamicScroll (f) {
+	window.addEventListener("scroll", (function(){
+		var scrollDifference = Math.abs(oldScrollPos-window.scrollY);
+		if (scrollDifference > 1000) {
+			window.requestAnimationFrame(f);
+			oldScrollPos = window.scrollY;
+		}
+	}), false);
+}
 
 // ----------------------------------------
 // DASHBOARD BUTTONS
@@ -101,7 +117,7 @@ if (loc.includes('tumblr.com/dashboard') || loc.includes('tumblr.com/like')) {
 		// For initial page load
 		dashboardDownloadButtons();
 		// For endless scrolling users
-		window.addEventListener("scroll", dashboardDownloadButtons, false);
+		dynamicScroll(dashboardDownloadButtons);
 	}, false);
 }
 
@@ -173,6 +189,6 @@ if (location.hostname.includes('tumblr.com') && location.hostname != 'tumblr.com
 		// For initial page load
 		blogDownloadButtons();
 		// For endless scrolling users
-		window.addEventListener("scroll", blogDownloadButtons, false);
+		dynamicScroll(blogDownloadButtons);
 	}, false);
 }
