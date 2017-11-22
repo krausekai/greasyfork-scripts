@@ -1,6 +1,6 @@
 After taking a Quizlet test, when viewing your Quizlet deck, the keyboard can be used by the keys "1, 2, 3, 4" to search by accuracy.
 
-Quizletでテストを受けたら、自分の学習セット（用語など）の画面でキーボードの1・2・3・4を押すと、正確によるカードをすぐに見つけることができます。
+Quizletでテストを受けたら、自分の学習セットに入っている用語の画面でキーボードの1・2・3・4を押すと、正確によるカードがすぐに見つけられます。
 
 <hr />
 <b>Support</b>
