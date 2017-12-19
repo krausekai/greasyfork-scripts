@@ -2,7 +2,7 @@
 // @name         Tumblr Images to HD Redirector
 // @namespace    TumblrImgReszr
 // @description  Automatically promotes Tumblr image links to raw HD versions
-// @version      2.3
+// @version      2.4
 // @author       Kai Krause <kaikrause95@gmail.com>
 // @include      /^https?://.+\.media\.tumblr\.com.+?(jpe?g|png|bmp|gif)/
 // @grant        GM_xmlhttpRequest
@@ -20,7 +20,7 @@ function checkSize(i) {
 	var imageType = loc.match(/[^.]*$/)[0];
 
 	// Do not redirect if already HD
-	if (i > imageSizes.length || imageType == "gif" && parseInt(imageSize) >= 540 || parseInt(imageSize) >= parseInt(imageSizes[i]) || loc.includes('_raw')) {
+	if (i > imageSizes.length || parseInt(imageSize) >= parseInt(imageSizes[i]) || loc.includes('_raw')) {
 		document.body.style.cursor = "";
 		return;
 	}
