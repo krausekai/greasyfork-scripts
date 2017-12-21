@@ -2,7 +2,7 @@
 // @name         Clean Font Weights
 // @namespace    cleanFonts_kk
 // @description  Make website font-weights standard (400) if below 400
-// @version      0.6
+// @version      0.7
 // @author       Kai Krause <kaikrause95@gmail.com>
 // @include      *
 // @run-at       document-idle
