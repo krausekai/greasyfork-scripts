@@ -23,13 +23,18 @@ function font() {
 	for (var i = 0; i < allElements.length; i++) {
 		if (cachedElements.indexOf(allElements[i]) > -1) continue;
 		cachedElements.push(allElements[i]);
+		applyFont(allElements, i);
+	}
+}
 
+function applyFont (allElements, i) {
+	setTimeout(function(){
 		var css = window.getComputedStyle(allElements[i], null);
 		var fontWeight = css.getPropertyValue("font-weight");
 		if (fontWeight && fontWeight < 400) {
 			allElements[i].classList.add("fontOverride_kk");
 		}
-	}
+	}, Math.random(4,12));
 }
 
 // Page Load
