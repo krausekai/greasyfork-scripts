@@ -2,7 +2,7 @@
 // @name         Tumblr HD Video Download Buttons
 // @namespace    TumblrVideoReszr
 // @description  Automatically redirect Tumblr video links to raw HD versions, and display a download button below videos
-// @version      2.1
+// @version      2.3
 // @author       Kai Krause <kaikrause95@gmail.com>
 // @match        http://*.tumblr.com/*
 // @match        https://*.tumblr.com/*
@@ -48,7 +48,7 @@ redirectToHD();
 
 // Create the button style
 var downloadButtonStyle = document.createElement("style");
-downloadButtonStyle.innerText = ".videoDownloadButtonStyle_kk{display:table !important; width:100% !important; padding:4px !important; border:2px solid #979EA8 !important; background-color:#2F3D51 !important; color: #979EA8 !important; font-weight: 600 !important; text-align: center !important; text-decoration: none !important} .videoDownloadButtonStyle_kk:hover{color:#F5F5F5 !important;}";
+downloadButtonStyle.innerText = ".videoDownloadButtonStyle_kk{display:table !important; width:100% !important; padding:6px !important; border:2px solid #979EA8 !important; background-color:#2F3D51 !important; color: #979EA8 !important; line-height: 100% !important; font-family:'Helvetica Neue', HelveticaNeue, Helvetica, Arial, sans-serif; font-weight: 600 !important; text-align: center !important; font-style: normal !important; text-decoration: none !important} .videoDownloadButtonStyle_kk:hover{color:#F5F5F5 !important;}";
 document.head.appendChild(downloadButtonStyle);
 
 // ----------------------------------------
@@ -143,7 +143,7 @@ function req (videoNum, video) {
 					embedBlogDownloadButtons(videoNum, videoUrl);
 				} catch (e) {
 					if (!eDisplay) {
-						window.alert("There was a problem embedding video download buttons. Please report this at the below site. （動画を保存するボタンを埋め込む問題が発生しました。この問題を下のサイトまで報告してください。）\n\nhttps://greasyfork.org/en/scripts/32038-tumblr-hd-video-download-buttons\n\n" + "The problem is (発生した問題は):\n" + e);
+						window.alert("There was a problem embedding video download buttons. Please report this at the below site. （動画のダウンロードボタンの埋め込みに問題が発生しました。下のサイトまで報告してください。）\n\nhttps://greasyfork.org/en/scripts/32038-tumblr-hd-video-download-buttons\n\n" + "The problem is (発生した問題は):\n" + e);
 						eDisplay = true;
 					}
 				}
