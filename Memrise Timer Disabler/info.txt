@@ -1,6 +1,6 @@
 Disables the timer when watering on Memrise.
 
-Originally forked from carpiediem (http://userscripts-mirror.org/scripts/show/174879) to fix site matching rules.
+This script is the updated version of the script by <a href="http://userscripts-mirror.org/scripts/show/174879">carpiediem</a>.
 
 <hr />
 <b>Support</b>
