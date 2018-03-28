@@ -4,9 +4,10 @@
 // @author         Kai Krause <kaikrause95@gmail.com>
 // @match          http://*.memrise.com/*
 // @match          https://*.memrise.com/*
-// @version        1.4
+// @version        1.5
 // @grant          none
 // @run-at         document-end
+// @namespace      https://greasyfork.org/users/3656
 // ==/UserScript==
 
 var onLoad = function() {
@@ -14,9 +15,9 @@ var onLoad = function() {
 	var questionsAnswers = MEMRISE.garden.screens;
 	var getCurrentItem = function(displayedQuestion) {
 		for (var id in questionsAnswers) {
-			var expectedQuestion = questionsAnswers[id].typing.prompt.text.trim();
+			var expectedQuestion = questionsAnswers[id].typing.prompt.text.value.trim();
 			if (displayedQuestion === expectedQuestion) {
-				var expectedAnswer = questionsAnswers[id].typing.correct;
+				var expectedAnswer = questionsAnswers[id].typing.answer.value;
 				if (expectedQuestion && expectedAnswer) {
 					return {
 						question : expectedQuestion,
