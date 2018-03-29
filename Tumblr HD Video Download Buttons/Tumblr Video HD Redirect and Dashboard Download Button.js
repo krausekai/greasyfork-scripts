@@ -141,7 +141,8 @@ function req (videoNum, video) {
 					a[0] = a[0].replace("_frame1", "");
 					var videoUrl = "https://vt.tumblr.com" + a[0].toString() + "mp4";
 					embedBlogDownloadButtons(videoNum, videoUrl);
-				} catch (e) {
+				}
+				catch (e) {
 					if (!eDisplay) {
 						window.alert("There was a problem embedding video download buttons. Please report this at the below site. （動画のダウンロードボタンの埋め込みに問題が発生しました。下のサイトまで報告してください。）\n\nhttps://greasyfork.org/en/scripts/32038-tumblr-hd-video-download-buttons\n\n" + "The problem is (発生した問題は):\n" + e);
 						eDisplay = true;
