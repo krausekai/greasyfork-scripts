@@ -6,6 +6,7 @@ This script is the updated version of the script by <a href="http://userscripts-
 <b>Support</b>
 	A) Please use the "Feedback" tab above, or
 	B) Email me at: <a href="mailto:kaikrause95@gmail.com">kaikrause95@gmail.com</a>.
+	<b>Notice</b>: I do not use the Memrise forums.
 <hr />
 <b>Donations</b>
 	If this script is helpful, please consider supporting me and development. Thank you very much!
