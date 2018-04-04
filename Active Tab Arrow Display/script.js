@@ -15,9 +15,6 @@ function flashTitle() {
 		var title = document.title;
 		title = title.replace(modifier,"");
 
-		if (title[0] == modifier) {
-			title = title.substr(2);
-		}
 		if (document.hasFocus() || !document.hidden) {
 			document.title = modifier + " " + title;
 		} else if (!document.hasFocus() && document.hidden) {
