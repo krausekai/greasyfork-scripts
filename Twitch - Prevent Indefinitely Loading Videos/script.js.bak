@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         Twitch - Prevent Indefinitely Loading Videos
 // @namespace    TwitchPreventIndefLoad
-// @description  Continue to play videos that indefinitely load due to high CPU usage
-// @version      1.1
+// @description  Continue to play indefinitely loading videos due to high CPU usage
+// @version      1.0
 // @author       Kai Krause <kaikrause95@gmail.com>
 // @match        http://*.twitch.tv/*
 // @match        https://*.twitch.tv/*
@@ -19,13 +19,27 @@ function preventSpinner() {
 		var spinner = document.getElementsByClassName("pl-loading-spinner")[0];
 		var play = document.getElementsByClassName("qa-pause-play-button")[0];
 		if (spinner && play) {
+			//spinCount++;
+			//time++;
+
 			//rateLimit to every 5 seconds
-			var currentSpinTime = Date.now();
-			var difference = (currentSpinTime - lastSpinTime) / 1000;
+			var currentSearchTime = Date.now();
+			var difference = (currentSearchTime - lastSpinTime) / 1000;
 			if (difference < 5) {
 				return;
 			}
 			lastSpinTime = Date.now();
+
+			/*
+			if (spinCount > 3 && time < 5) {
+				timer = timer * time;
+				spinCount = 0;
+				time = 0;
+				return
+			} else if (spinCount > 3 && time > 5) {
+				timer = baseTimer;
+			}
+			*/
 
 			play.click();
 			setTimeout(() => {

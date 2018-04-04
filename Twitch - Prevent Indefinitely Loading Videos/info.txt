@@ -1,4 +1,4 @@
-Continue to play Twitch videos which may load indefinitely due to high CPU usage (eg. when gaming).
+Continue to play videos that indefinitely load due to high CPU usage (eg. when gaming).
 <br />
 <hr />
 <b>Support</b>
