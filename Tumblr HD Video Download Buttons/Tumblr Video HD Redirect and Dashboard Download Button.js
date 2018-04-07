@@ -2,7 +2,7 @@
 // @name         Tumblr HD Video Download Buttons
 // @namespace    TumblrVideoReszr
 // @description  Automatically redirect Tumblr video links to raw HD versions, and display a download button below videos
-// @version      2.3
+// @version      2.4
 // @author       Kai Krause <kaikrause95@gmail.com>
 // @match        http://*.tumblr.com/*
 // @match        https://*.tumblr.com/*
@@ -136,10 +136,10 @@ function req (videoNum, video) {
 				try {
 					var text = response.responseText;
 					var a = text.match("previews.+tumblr_.+filmstrip\.") || text.match("\/tumblr_.+frame1\.");
-					a[0] = a[0].replace("previews\\", "");
+					a[0] = a[0].replace("previews/", "");
 					a[0] = a[0].replace("_filmstrip", "");
 					a[0] = a[0].replace("_frame1", "");
-					var videoUrl = "https://vt.tumblr.com" + a[0].toString() + "mp4";
+					var videoUrl = "https://vt.tumblr.com/" + a[0].toString() + "mp4";
 					embedBlogDownloadButtons(videoNum, videoUrl);
 				}
 				catch (e) {
