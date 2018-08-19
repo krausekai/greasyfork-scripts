@@ -1,8 +1,6 @@
-Continue to play videos that indefinitely load due to high CPU usage (eg. when gaming).
+Redirect broadcasts to the popout version to save CPU usage.
 
-Also see:
-- <a href="https://greasyfork.org/en/scripts/371337-twitch-redirect-live-videos-to-popout-player-version">Twitch - Redirect Live Videos to Popout Player Version</a>.
-- <a href="https://greasyfork.org/en/scripts/40246-twitch-prevent-indefinitely-loading-videos-vods">Twitch - Prevent Indefinitely Loading Videos (VODs)</a>.
+Also see: <a href="https://greasyfork.org/en/scripts/371309-twitch-redirect-videos-vods-to-popout-player-version">Twitch - Redirect Videos (VoDs) to Popout Player Version</a>.
 
 <hr />
 <b>Support</b>
