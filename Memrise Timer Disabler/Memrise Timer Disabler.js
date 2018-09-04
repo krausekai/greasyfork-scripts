@@ -11,7 +11,7 @@
 function callback() {
 	MEMRISE.garden._events.pause[0]();
 	MEMRISE.garden.session.timer.countdown = false;
-	MEMRISE.garden.$speedbg[0] = ""
+	MEMRISE.garden.$speedbg[0] = "";
 	//MEMRISE.garden.$speedtimer = {}
 }
 var observer = new MutationObserver(callback);
