@@ -10,7 +10,7 @@
 
 function callback() {
 	MEMRISE.garden.$speedtimer = null;
-  MEMRISE.garden._events.pause[0]();
+	MEMRISE.garden._events.pause[0]();
 }
 var observer = new MutationObserver(callback);
 var config = { attributes: true, childList: true, subtree: true };
