@@ -77,7 +77,6 @@ function dashboardDownloadButtons() {
 	for (var i = 0; i < posts.length; ++i) {
 		var videos = posts[i].getElementsByTagName('video');
 		if (videos[0]) {
-			console.log("true")
 			for (var a = 0; a < videos.length; ++a) {
 				// if the button already exists, ignore this post
 				var btnCheck = posts[i].getElementsByClassName('videoDownloadButtonStyle_kk');
