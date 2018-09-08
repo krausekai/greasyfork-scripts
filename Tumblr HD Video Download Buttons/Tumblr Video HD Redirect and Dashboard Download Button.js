@@ -2,7 +2,7 @@
 // @name         Tumblr HD Video Download Buttons
 // @namespace    TumblrVideoReszr
 // @description  Automatically redirect Tumblr video links to raw HD versions, and display a download button below videos
-// @version      2.4
+// @version      2.5
 // @author       Kai Krause <kaikrause95@gmail.com>
 // @match        http://*.tumblr.com/*
 // @match        https://*.tumblr.com/*
@@ -72,11 +72,12 @@ function dynamicScroll (f) {
 // ----------------------------------------
 
 function dashboardDownloadButtons() {
-	var posts = document.getElementsByClassName('post_media');
+	var posts = document.getElementsByClassName('post_wrapper');
 
 	for (var i = 0; i < posts.length; ++i) {
 		var videos = posts[i].getElementsByTagName('video');
 		if (videos[0]) {
+			console.log("true")
 			for (var a = 0; a < videos.length; ++a) {
 				// if the button already exists, ignore this post
 				var btnCheck = posts[i].getElementsByClassName('videoDownloadButtonStyle_kk');
@@ -106,7 +107,13 @@ function dashboardDownloadButtons() {
 				downloadButton.setAttribute('class', 'videoDownloadButtonStyle_kk');
 				downloadButton.setAttribute('href', videoURL);
 				downloadButton.setAttribute('target', '_blank');
-				posts[i].appendChild(downloadButton);
+
+				// normal videos
+				var belowVideo = posts[i].getElementsByClassName('post_media')[0];
+				// reblogged videos
+				if (!belowVideo) belowVideo = posts[i].getElementsByClassName('reblog-content')[0];
+				// embed button
+				belowVideo.appendChild(downloadButton);
 			}
 		}
 	}
