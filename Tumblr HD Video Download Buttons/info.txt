@@ -1,10 +1,10 @@
 <table>
 <tr>
 <td width="70%">
-If this script is helpful, please consider <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=kaikrause95%40gmail%2ecom&lc=AU&item_name=Kai%20Krause%20%28krausekai%2fkainokage%29&currency_code=AUD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted">donating with PayPal</a> to support me and development. Thank you very much! - Kai, <a href="mailto:kaikrause95@gmail.com">kaikrause95@gmail.com</a>
+If this script is helpful, please consider <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=kaikrause95%40gmail%2ecom&lc=AU&item_name=Kai%20Krause&currency_code=AUD&bn=PP%2dDonationsBF%3aLDY0zOy%2epng%3aNonHosted">donating with PayPal</a> to support me and development. Thank you very much! - Kai, <a href="mailto:kaikrause95@gmail.com">kaikrause95@gmail.com</a>
 </td>
 <td width="30%">
-<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=kaikrause95%40gmail%2ecom&lc=AU&item_name=Kai%20Krause%20%28krausekai%2fkainokage%29&currency_code=AUD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted"><img width="650px" height="54px" src="https://i.imgur.com/LDY0zOy.png"></img></a>
+<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=kaikrause95%40gmail%2ecom&lc=AU&item_name=Kai%20Krause&currency_code=AUD&bn=PP%2dDonationsBF%3aLDY0zOy%2epng%3aNonHosted"><img width="650px" height="54px" src="https://i.imgur.com/LDY0zOy.png"></img></a>
 </td>
 </tr>
 </table>
