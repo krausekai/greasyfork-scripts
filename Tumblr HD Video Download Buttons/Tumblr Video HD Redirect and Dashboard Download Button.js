@@ -2,7 +2,7 @@
 // @name         Tumblr HD Video Download Buttons
 // @namespace    TumblrVideoReszr
 // @description  Automatically redirect Tumblr video links to raw HD versions, and display a download button below videos
-// @version      2.7
+// @version      2.8
 // @author       Kai Krause <kaikrause95@gmail.com>
 // @match        http://*.tumblr.com/*
 // @match        https://*.tumblr.com/*
@@ -110,13 +110,23 @@ function dashboardDownloadButtons() {
 				downloadButton.setAttribute('href', videoURL);
 				downloadButton.setAttribute('target', '_blank');
 
-				// normal videos
-				var belowVideo = posts[i].getElementsByClassName('post_media')[0];
-				if (!belowVideo) belowVideo = posts[i].getElementsByClassName('tmblr-full')[0];
-				if (!belowVideo) belowVideo = posts[i].getElementsByTagName('figure')[0];
+				var belowVideo = "";
 				// reblogged videos
 				if (!belowVideo) belowVideo = posts[i].getElementsByClassName('reblog-content')[0];
+				// normal videos
+				if (!belowVideo) belowVideo = posts[i].getElementsByClassName('post_media')[0];
+				if (!belowVideo) belowVideo = posts[i].getElementsByClassName('tmblr-full')[0];
+				if (!belowVideo) belowVideo = posts[i].getElementsByTagName('figure')[0];
+				/*
+				// This will a) not load-in because tumblr's JS overwrites it, and b) displays underneath the video player control bar somehow...
+				if (!belowVideo) {
+					var crtVideo = posts[i].getElementsByClassName('post_body')[0].getElementsByTagName("div")[0];
+					if (crtVideo.hasAttribute("data-crt-video")) belowVideo = crtVideo;
+				}*/
+				if (!belowVideo) belowVideo = posts[i].getElementsByClassName('post_body')[0];
 				belowVideo.appendChild(downloadButton);
+				// consider displaying the button above videos, due to tumblr changes and the problem of displaying it below videos
+				//belowVideo.insertBefore(downloadButton, belowVideo.childNodes[0]);
 			}
 		}
 	}
@@ -125,7 +135,7 @@ if (location.hostname.includes("tumblr.com")) {
 	if (loc.endsWith('.com/') || loc.includes('tumblr.com/dashboard') || loc.includes('tumblr.com/post') || loc.includes('tumblr.com/like')
 		|| loc.includes('tumblr.com/search/') || loc.includes('tumblr.com/tagged')) {
 		window.addEventListener("DOMContentLoaded", function load() {
-			//window.removeEventListener("DOMContentLoaded", load, false);
+			window.removeEventListener("DOMContentLoaded", load, false);
 			// For initial page load
 			dashboardDownloadButtons();
 			// For endless scrolling users
