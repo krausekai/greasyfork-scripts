@@ -1,6 +1,6 @@
 1. Select/Highlight text in your web browser.
 2. Open either the GreaseMonkey or TamperMonkey icon in your browser toolbar, and click "Open a Jp Cloze Test" (From 'User script commands' menu in GreaseMonkey).
-3. This script will open https://krausekai.github.io/japanese-cloze-tester/index.html and use your selected text.
+3. This script will open https://krausekai.github.io/japanese-tools/cloze-tester/index.html and use your selected text.
 
 <hr />
 <b>Support</b>
