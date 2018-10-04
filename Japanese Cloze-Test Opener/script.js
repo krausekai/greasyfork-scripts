@@ -2,7 +2,7 @@
 // @name           Japanese Cloze-Test Opener
 // @description    Open Japanese cloze tests from any text selected on a website
 // @namespace      https://greasyfork.org/en/users/3656-kaiko
-// @version        1.5
+// @version        1.6
 // @grant          GM_registerMenuCommand
 // @include        *
 // ==/UserScript==
@@ -18,5 +18,5 @@ function getSelectionText() {
 	}
 
 	// Open the cloze tester website
-	window.open("https://krausekai.github.io/japanese-cloze-tester/index.html?" + text);
+	window.open("https://krausekai.github.io/japanese-tools/cloze-tester/index.html?" + text);
 }
