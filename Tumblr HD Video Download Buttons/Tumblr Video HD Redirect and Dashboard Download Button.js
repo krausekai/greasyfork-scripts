@@ -2,7 +2,7 @@
 // @name         Tumblr HD Video Download Buttons
 // @namespace    TumblrVideoReszr
 // @description  Automatically redirect Tumblr video links to raw HD versions, and display a download button below videos
-// @version      2.8
+// @version      2.9
 // @author       Kai Krause <kaikrause95@gmail.com>
 // @match        http://*.tumblr.com/*
 // @match        https://*.tumblr.com/*
@@ -75,7 +75,7 @@ function dashboardDownloadButtons() {
 	// Tumblr uses two class names that only differ by "-" and "_". The former used for blogs, and the latter for the dashboard.
 	var posts = document.getElementsByClassName('post-wrapper');
 	if (!posts[0]) posts = document.getElementsByClassName('post_wrapper');
-	//var posts = document.getElementsByClassName('post_wrapper');
+	if (!posts[0]) posts = document.getElementsByClassName('text-post'); // blogs...
 
 	for (var i = 0; i < posts.length; ++i) {
 		var videos = posts[i].getElementsByTagName('video');
@@ -212,7 +212,9 @@ if (location.hostname.includes('tumblr.com') && location.hostname != 'tumblr.com
 		window.removeEventListener("DOMContentLoaded", load, false);
 		// For initial page load
 		blogDownloadButtons();
+		dashboardDownloadButtons();
 		// For endless scrolling users
 		dynamicScroll(blogDownloadButtons);
+		dynamicScroll(dashboardDownloadButtons);
 	}, false);
 }
