@@ -2,7 +2,7 @@
 // @name         Tumblr Images to HD Redirector
 // @namespace    TumblrImgReszr
 // @description  Automatically promotes Tumblr image links to raw HD versions
-// @version      2.4
+// @version      2.5
 // @author       Kai Krause <kaikrause95@gmail.com>
 // @include      /^https?://.+\.media\.tumblr\.com.+?(jpe?g|png|bmp|gif)/
 // @grant        GM_xmlhttpRequest
@@ -17,7 +17,8 @@ function checkSize(i) {
 	i = i || 0;
 	var loc = location.origin + location.pathname;
 	var imageSize = loc.match(/\d+(?=.\w+$)/)[0];
-	var imageType = loc.match(/[^.]*$/)[0];
+	var imageType = "." + loc.match(/[^.]*$/)[0];
+	var imageSizeType = imageSize + imageType;
 
 	// Do not redirect if already HD
 	if (i > imageSizes.length || parseInt(imageSize) >= parseInt(imageSizes[i]) || loc.includes('_raw')) {
@@ -28,11 +29,12 @@ function checkSize(i) {
 	document.body.style.cursor = "progress"; // Show loading cursor
 
 	// Create the HD image url
+	var imageNextSizeType = imageSizes[i] + imageType;
 	if (imageSizes[i] == 'raw') {
 		loc = loc.replace(/[^/]*media.tumblr.com/, 's3.amazonaws.com/data.tumblr.com');
-		loc = loc.replace(imageSize, imageSizes[i]);
+		loc = loc.replace(imageSizeType, imageNextSizeType);
 	} else {
-		loc = loc.replace(imageSize, imageSizes[i]);
+		loc = loc.replace(imageSizeType, imageNextSizeType);
 	}
 
 	// If the URL is HTTP, change it to HTTPS
