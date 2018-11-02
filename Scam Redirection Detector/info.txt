@@ -1,5 +1,7 @@
 <img src="https://i.imgur.com/ZCAFitB.png"></img>
 
+Block scam sites by detecting common terminology, phrasing, and javascript obfuscation techniques used by scammers. Effective against new zero-day domain attacks, rather than relying on a domain blacklist or whitelist.
+
 <b>Support</b>
 	A) Please use the "Feedback" tab above, or
 	B) Email me at: <a href="mailto:kaikrause95@gmail.com">kaikrause95@gmail.com</a>.
