@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Scam Site Blocker
 // @namespace    blockWinScamSites
-// @version      1.5
+// @version      1.6
 // @description  Block potential windows and mac scam sites
 // @author       Kai Krause <kaikrause95@gmail.com>
 // @include      *
@@ -77,7 +77,9 @@ function main() {
 	var phrases = ["microsoft windows warning", "your computer was locked", "this computer is blocked", "your computer is blocked", "your computer has been blocked", "your computer has been infected", "your computer has alerted us", "call microsoft toll free", "windows has detected", "your system detected", "please call microsoft", "ransomware virus has infected your system", "trying to steal financial information", "information is being stolen", "removal process over the phone", "prevent your computer from being disabled", "contact our certified", "windows technician", "pornographic spyware", "malicious virus", "malicious malware", "mac os is infected", "if you leave your mac os will remain damaged", "if you leave this site your mac os will remain damaged", "phishing/spyware were found on your mac", "banking information are at risk", "if you close this page, your computer access will be disabled", "your computer access will be disabled to prevent further damage", "call us within the next 5 minutes to prevent your computer from being disabled", "enter windows registration key to unblock", "do not close this window and restart your computer", "your computer's registration key is unblocked", "has been blocked under instructions of a competent us government authority", "under this url is an offence in law", "contact microsoft engineer", "do not ignore this important warning", "suspicious activity detected on your ip address", "due to harmful virus installed in your computer", "contact microsoft helpline to reactivate your computer", "this window is sending virus over the internet", "is hacked or used from undefined location", "your system detected some unusual activity", "it might harm your computer data and track your financial activities", "there is a system file missing due to some harmfull virus", "debug malware error, system failure", "the following data may be compromised", "do not ignore this critical alert", "your computer access will be disabled to prevent further damage to our network", "our engineers can guide you through the phone removal process", "microsoft security tollfree", "error # dt00X02", "error # dt00X2", "contact_microsoft_support", "system_protect - protect_error", "to secure your data and windows system click here", "windows operating system alert", "windows & internet browser updates are needed to patch new security flaws and / or fix bugs in the system", "RDN/YahLover.worm!"];
 
 	// Get page content
-	var page = document.head.innerText.toLowerCase() + document.body.innerText.toLowerCase();
+	var page = "";
+	if (document.head) page += document.head.innerText.toLowerCase();
+	if (document.body) page += document.body.innerText.toLowerCase();
 
 	// Detect phrases
 	for (let i = 0; i < phrases.length; i++) {
@@ -96,6 +98,12 @@ function blockPage() {
 		window.stop();
 		// Clear the header
 		document.getElementsByTagName('head')[0].innerHTML = "<title>" + document.title + "</title>";
+		// Rewrite problematic JS functions
+		resetFullscreen();
+		document.write = null;
+		window.eval = null;
+		window.alert = null;
+		if (window.jQuery) $ = null;
 		// Rewrite the body
 		if (!document.body) {
 			setTimeout(() => {
@@ -112,20 +120,25 @@ function blockPage() {
 		document.getElementById("ignorePage").style.padding = "6px";
 		document.getElementById("authorlink").addEventListener("click", openAuthorPage);
 		document.getElementById("ignorePage").addEventListener("click", ignorePage);
-		// Reject full screen, just in case it was initiated
-		closeFullscreen();
-		document.addEventListener("click", closeFullscreen);
-		// Rewrite problematic JS functions
-		window.eval = null;
-		window.alert = null;
-		if (window.jQuery) $ = null;
 		// Finished
 		finishedBlocking = true;
 	}
 }
 
-function closeFullscreen() {
+function resetFullscreen() {
 	setTimeout(() => {
+		// Override fullscreen functions
+		var elem = document.documentElement;
+		if (elem.requestFullscreen) {
+			elem.requestFullscreen = null;
+		} else if (elem.mozRequestFullScreen) { /* Firefox */
+			elem.mozRequestFullScreen = null;
+		} else if (elem.webkitRequestFullscreen) { /* Chrome, Safari and Opera */
+			elem.webkitRequestFullscreen = null;
+		} else if (elem.msRequestFullscreen) { /* IE/Edge */
+			elem.msRequestFullscreen = null;
+		}
+		// Exit fullscreen
 		if (document.exitFullscreen) {
 			document.exitFullscreen();
 		} else if (document.mozCancelFullScreen) { /* Firefox */
