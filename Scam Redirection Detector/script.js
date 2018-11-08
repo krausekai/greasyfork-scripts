@@ -91,7 +91,7 @@ function main() {
 
 	// flag bad domain TLDs
 	// TODO: consider subdomain.websitename.tld (eg. for .us and .in.net particularly)
-	var badTLDs = [".pw", ".site", ".club", ".gq", ".cf", ".us", ".xyz", ".bid", ".ga", ".ml", ".tk", ".in.net", ".win", ".info", ".icu", ".ru", ".live"];
+	var badTLDs = [".pw", ".site", ".club", ".gq", ".cf", ".us", ".xyz", ".bid", ".ga", ".ml", ".tk", ".in.net", ".win", ".info", ".icu", ".ru", ".live", ".website"];
 	var domainTLDCount = (location.hostname.match(/\./g) || []).length;
 	if (domainTLDCount === 1) {
 		for (let i = 0; i < badTLDs.length; i++) {
