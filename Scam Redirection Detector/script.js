@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Scam Site Blocker
 // @namespace    blockWinScamSites
-// @version      2.3
+// @version      2.4
 // @description  Block potential windows and mac scam sites
 // @author       Kai Krause <kaikrause95@gmail.com>
 // @include      *
@@ -91,7 +91,7 @@ function main() {
 
 	// flag bad domain TLDs
 	// TODO: consider subdomain.websitename.tld (eg. for .us and .in.net particularly)
-	var badTLDs = [".pw", ".site", ".club", ".gq", ".cf", ".us", ".xyz", ".bid", ".ga", ".ml", ".tk", ".in.net", ".win", ".info", ".icu", ".ru", ".live", ".website"];
+	var badTLDs = [".pw", ".site", ".club", ".gq", ".cf", ".us", ".xyz", ".bid", ".ga", ".ml", ".tk", ".in.net", ".win", ".info", ".icu", ".ru", ".live", ".website", ".online", ".loan", ".men", ".click", ".date", ".cloud", ".accountant", ".accountants", ".stream", ".download", ".country", ".vip", ".jetzt", ".xin", ".gdn", ".racing", ".top", ".work", ".ren", ".kim", ".mom", ".party", ".review", ".trade", ".wang"];
 	var domainTLDCount = (location.hostname.match(/\./g) || []).length;
 	if (domainTLDCount === 1) {
 		for (let i = 0; i < badTLDs.length; i++) {
