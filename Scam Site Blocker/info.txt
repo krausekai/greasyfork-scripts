@@ -1,4 +1,4 @@
-<img src="https://i.imgur.com/ZCAFitB.png"></img>
+<img src="https://i.imgur.com/FkJs4Qf.png"></img>
 
 Block scam sites by detecting common terminology, phrasing, and javascript obfuscation techniques used by scammers. Effective against new zero-day domain attacks, rather than relying on a domain blacklist or whitelist.
 

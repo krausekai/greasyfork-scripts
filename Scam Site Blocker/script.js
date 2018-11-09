@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Scam Site Blocker
 // @namespace    blockWinScamSites
-// @version      2.4
+// @version      2.5
 // @description  Block potential windows and mac scam sites
 // @author       Kai Krause <kaikrause95@gmail.com>
 // @include      *
@@ -91,7 +91,9 @@ function main() {
 
 	// flag bad domain TLDs
 	// TODO: consider subdomain.websitename.tld (eg. for .us and .in.net particularly)
-	var badTLDs = [".pw", ".site", ".club", ".gq", ".cf", ".us", ".xyz", ".bid", ".ga", ".ml", ".tk", ".in.net", ".win", ".info", ".icu", ".ru", ".live", ".website", ".online", ".loan", ".men", ".click", ".date", ".cloud", ".accountant", ".accountants", ".stream", ".download", ".country", ".vip", ".jetzt", ".xin", ".gdn", ".racing", ".top", ".work", ".ren", ".kim", ".mom", ".party", ".review", ".trade", ".wang"];
+	// https://en.wikipedia.org/wiki/List_of_Internet_top-level_domains#ICANN-era_generic_top-level_domains
+	var badTLDs = ["academy", "accountant", "accountants", "active", "actor", "ads", "adult", "agency", "airforce", "analytics", "apartments", "app", "army", "art", "associates", "attorney", "auction", "audible", "audio", "author", "auto", "autos", "aws", "baby", "band", "bar", "barefoot", "bargains", "baseball", "basketball", "beauty", "beer", "best", "bestbuy", "bet", "bible", "bid", "bike", "bingo", "biz", "black", "blackfriday", "blockbuster", "blog", "blue", "boo", "book", "boots", "bot", "boutique", "box", "broadway", "broker", "build", "builders", "business", "buy", "buzz", "cab", "cafe", "call", "cam", "camera", "camp", "cancerresearch", "capital", "car", "cards", "care", "career", "careers", "cars", "case", "cash", "casino", "catering", "catholic", "center", "cern", "ceo", "cfd", "channel", "chat", "cheap", "christmas", "church", "cipriani", "circle", "city", "claims", "cleaning", "click", "clinic", "clothing", "cloud", "club", "coach", "codes", "coffee", "college", "community", "company", "compare", "computer", "condos", "construction", "consulting", "contact", "contractors", "cooking", "cool", "country", "coupon", "coupons", "courses", "credit", "creditcard", "cruise", "cricket", "cruises", "dad", "dance", "data", "date", "dating", "day", "deal", "deals", "degree", "delivery", "democrat", "dental", "dentist", "design", "dev", "diamonds", "diet", "digital", "direct", "directory", "discount", "diy", "docs", "doctor", "dog", "domains", "dot", "download", "drive", "duck", "earth", "eat", "education", "email", "energy", "engineer", "engineering", "enterprises", "equipment", "estate", "events", "exchange", "expert", "exposed", "express", "fail", "faith", "family", "fan", "fans", "farm", "fashion", "fast", "feedback", "film", "final", "finance", "financial", "fire", "fish", "fishing", "fit", "fitness", "flights", "florist", "flowers", "foo", "food", "foodnetwork", "football", "forsale", "forum", "foundation", "free", "frontdoor", "fun", "fund", "furniture", "fyi", "gallery", "game", "games", "garden", "gdn", "gift", "gifts", "gives", "glass", "global", "gold", "golf", "gop", "graphics", "gripe", "grocery", "group", "guide", "guitars", "guru", "hair", "hangout", "health", "healthcare", "help", "here", "hiphop", "hiv", "hockey", "holdings", "holiday", "homegoods", "homes", "homesense", "horse", "hospital", "host", "hosting", "hot", "hotels", "house", "how", "ice", "icu ", "industries", "ing", "ink", "institute[74]", "insurance", "insure", "international", "investments", "jewelry", "jobs", "joy", "kim", "kitchen", "land", "latino", "lawyer", "lease", "legal", "life", "lifeinsurance", "lighting", "like", "limited", "limo", "link", "live", "living", "loan", "loans", "locker", "lol", "lotto", "love", "luxury", "makeup", "management", "map", "market", "marketing", "markets", "mba", "med", "media", "meet", "meme", "memorial", "men", "menu", "mint", "mobi", "mobile", "mobily", "moe", "mom", "money", "mortgage", "motorcycles", "mov", "movie", "name", "navy", "network", "new", "news", "ninja", "now", "observer", "off", "one", "onl", "online", "ooo", "open", "origins", "page", "partners", "parts", "party", "pay", "pet", "phone", "photo", "photography", "photos", "pics", "pictures", "pid", "pin", "pink", "pizza", "place", "plumbing", "plus", "poker", "porn", "press", "prime", "pro", "productions", "prof", "promo", "properties", "property", "protection", "pub", "qpon", "racing", "radio", "read", "realestate", "realty", "recipes", "red", "rehab", "ren", "rent", "rentals", "repair", "report", "republican", "rest", "restaurant", "review", "reviews", "rich", "rip", "rocks", "rodeo", "room", "rugby", "run", "safe", "sale", "save", "scholarships", "school", "science", "search", "secure", "security", "select", "services", "sex", "sexy", "shoes", "shop", "shopping", "show", "showtime", "silk", "singles", "site", "ski", "skin", "sky", "sling", "smile", "soccer", "social", "software", "solar", "solutions", "song", "space", "spot", "spreadbetting", "storage", "store", "stream", "studio", "study", "style", "sucks", "supplies", "supply", "support", "surf", "surgery", "systems", "talk", "tattoo", "tax", "taxi", "team", "tech", "technology", "tennis", "theater", "theatre", "tickets", "tips", "tires", "today", "tools", "top", "tours", "town", "toys", "trade", "trading", "training", "travelersinsurance", "trust", "tube", "tunes", "uconnect", "university", "vacations", "ventures", "vet", "video", "villas", "vip", "vision", "vodka", "voting", "voyage", "wang", "watch", "watches", "weather", "webcam", "website", "wed", "wedding", "whoswho", "wiki", "win", "wine", "winners", "work", "works", "world", "wow", "wtf", "xxx", "xyz", "yachts", "yoga", "you", "zero", "zone", "shouji", "tushu", "wanggou", "weibo", "xihuan", "arte", "clinique", "luxe", "maison", "moi", "rsvp", "sarl", "epost", "haus", "immobilien", "jetzt", "kaufen", "kinder", "reisen", "schule", "versicherung", "desi", "shiksha", "casa", "immo", "moda", "bom", "passagens", "gratis", "futbol", "hoteles", "juegos", "soy", "tienda", "uno", "viajes", "vuelos", "pw", "gq", "cf", "us", "ga", "ml", "tk", "in.net", "ru", "xin", "zip", "ws", "dk"];
+
 	var domainTLDCount = (location.hostname.match(/\./g) || []).length;
 	if (domainTLDCount === 1) {
 		for (let i = 0; i < badTLDs.length; i++) {
@@ -144,23 +146,18 @@ function blockPage() {
 		// Stop page from loading further
 		window.stop();
 		// Clear the header
-		document.getElementsByTagName('head')[0].innerHTML = "<title>" + document.title + "</title>";
+		var head = document.getElementsByTagName('head');
+		if (head[0]) head[0].innerHTML = "<title>" + document.title + "</title>";
 		// Rewrite the body
 		if (!document.body) {
 			setTimeout(() => {
 				document.body = document.createElement("body");
+				fillBody();
 			}, 0);
 		}
-		document.body.innerHTML = "<center><h2>Suspicious Site Blocked by <a href='#' id='authorlink' style='color:#FFFFFF;'><u>Scam Site Blocker</u></a></h2><br /></center>";
-		document.body.innerHTML += "<center>This website may be operated by scammers. Go back or close this page.<br /><br /></center>";
-		document.body.innerHTML += "<center>If you think this is an error, confirm the website address before ignoring this warning.<br /><br /></center>";
-		document.body.innerHTML += "<center><button id='ignorePage'>Ignore Warning</button></center>";
-		document.body.style.fontSize = "18px";
-		document.body.style.color = "#FFFFFF";
-		document.body.style.backgroundColor = "#99000F";
-		document.getElementById("ignorePage").style.padding = "6px";
-		document.getElementById("authorlink").addEventListener("click", openAuthorPage);
-		document.getElementById("ignorePage").addEventListener("click", ignorePage);
+		else {
+			fillBody();
+		}
 		// Rewrite problematic JS functions
 		resetFullscreen();
 		document.write = null;
@@ -172,6 +169,19 @@ function blockPage() {
 		// Finished
 		finishedBlocking = true;
 	}
+}
+
+function fillBody() {
+	document.body.innerHTML = "<center><h2>Suspicious Site Blocked by <a href='#' id='authorlink' style='color:#FFFFFF;'><u>Scam Site Blocker</u></a></h2><br /></center>";
+	document.body.innerHTML += "<center>This website may be operated by scammers. Go back or close this page.<br /><br /></center>";
+	document.body.innerHTML += "<center>If you think this is an error, confirm the website address before ignoring this warning.<br /><br /></center>";
+	document.body.innerHTML += "<center><button id='ignorePage'>Ignore Warning</button></center>";
+	document.body.style.fontSize = "18px";
+	document.body.style.color = "#FFFFFF";
+	document.body.style.backgroundColor = "#99000F";
+	document.getElementById("ignorePage").style.padding = "6px";
+	document.getElementById("authorlink").addEventListener("click", openAuthorPage);
+	document.getElementById("ignorePage").addEventListener("click", ignorePage);
 }
 
 function resetFullscreen() {
