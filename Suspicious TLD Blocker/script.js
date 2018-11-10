@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Suspicious Website TLD Blocker
 // @namespace    blockSuspiciousTLDs
-// @version      1.2
+// @version      1.3
 // @description  Block websites that use domain extensions often associated with spam, scams, and malware.
 // @author       Kai Krause <kaikrause95@gmail.com>
 // @include      *
@@ -9,6 +9,9 @@
 // @grant        GM_getValue
 // @run-at       document-start
 // ==/UserScript==
+
+// TODO(?): Region-specific TLD blocking. For example, blocking of Russian or Chinese TLDs.
+// TODO(?): Whitelist of government-owned .us domains, and blocking of all other .us domains.
 
 var websiteTerms = location.hostname.split(".");
 var currentURL = websiteTerms[websiteTerms.length-2] + "." + websiteTerms[websiteTerms.length-1]
@@ -23,7 +26,8 @@ var genericTLDs = ["academy", "accountant", "accountants", "active", "actor", "a
 
 // https://www.freenom.com/en/freeandpaiddomains.html
 // https://www.spamhaus.org/statistics/tlds/
-var badTLDs = ["pw", "gq", "cf", "us", "ga", "ml", "tk", "in.net", "ru", "xin", "zip", "ws", "dk"];
+// https://www.symantec.com/connect/blogs/zip-urls-or-why-you-should-block-domains-tld-doesnt-have-any
+var badTLDs = ["pw", "gq", "cf", "ga", "ml", "tk", "xin", "zip", "ws"];
 
 if (badTLDs.indexOf(thisTLD) > -1 || genericTLDs.indexOf(thisTLD) > -1) {
 	var isPageIgnored = GM_getValue(location.hostname);
