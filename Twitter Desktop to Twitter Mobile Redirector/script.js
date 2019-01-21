@@ -5,10 +5,11 @@
 // @author      Kai Krause <kaikrause95@gmail.com>
 // @match       http://twitter.com/*
 // @match       https://twitter.com/*
-// @version     1.0
+// @version     1.1
 // @grant       none
 // ==/UserScript==
 
+window.stop();
 var loc = location.href;
 loc = loc.replace("twitter.com", "mobile.twitter.com");
 location.replace(loc);
