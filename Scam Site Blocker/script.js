@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Scam Site Blocker
 // @namespace    blockWinScamSites
-// @version      3.9
+// @version      4.0
 // @description  Block potential windows and mac scam site popups and redirects
 // @author       Kai Krause <kaikrause95@gmail.com>
 // @include      *
@@ -10,11 +10,19 @@
 // @run-at       document-start
 // ==/UserScript==
 
+// ---------------------
+// PRE-RUN
+// ---------------------
+
 // do not run on these excluded websites
-var exclusions = ["microsoft.com", "apple.com", "github.com", "greasyfork.org", "wikipedia.org", "reddit.com", "google.com", "live.com", "mozilla.org", "youtube.com", "facebook.com", "twitter.com", "mcafee.com", "mcafeesecure.com", "mcafeemobilesecurity.com", "norton.com", "avg.com", "avast.com", "avira.com", "instagram.com", "kaspersky.com", "bitdefender.com", "malwarebytes.com", "sophos.com", "comodo.com", "av-test.org", "forbes.com", "howtogeek.com", "pcworld.com", "pandasecurity.com", "eset.com", "f-secure.com", "clamwin.com", "360totalsecurity.com"];
+var exclusions = ["microsoft.com", "apple.com", "github.com", "greasyfork.org", "wikipedia.org", "reddit.com", "google.com", "live.com", "mozilla.org", "youtube.com", "facebook.com", "twitter.com", "mcafee.com", "mcafeesecure.com", "mcafeemobilesecurity.com", "norton.com", "avg.com", "avast.com", "avira.com", "instagram.com", "kaspersky.com", "bitdefender.com", "malwarebytes.com", "sophos.com", "comodo.com", "av-test.org", "forbes.com", "howtogeek.com", "pcworld.com", "pandasecurity.com", "eset.com", "f-secure.com", "clamwin.com", "360totalsecurity.com", "washingtonpost.com", "techspot.com", "vice.com", "theverge.com", "nytimes.com", "bloomberg.com", "discordapp.com", "skype.com", "outlook.com", "gmail.com", "theguardian.com"];
 var currentURL = location.hostname.split(".");
 currentURL = currentURL[currentURL.length-2] + "." + currentURL[currentURL.length-1]
 if (exclusions.indexOf(currentURL) > -1) return;
+
+// ---------------------
+// HELPER FUNCTIONS
+// ---------------------
 
 // Time since the page has started to load
 var timer = Date.now();
@@ -29,6 +37,17 @@ function elapsedTime(timer, num) {
 		return false;
 	}
 }
+
+// Helper function to inject JS code into the page, for page-level access to JS functions and variables
+var injectCode = function(f) {
+	var script = document.createElement("script");
+	script.textContent = "(" + f.toString() + "());";
+	document.head.appendChild(script);
+};
+
+// ---------------------
+// MAIN CODE
+// ---------------------
 
 // Whether to block the page
 var shouldBlockPage = false;
@@ -123,12 +142,12 @@ function main() {
 	//}
 
 	// flag if an autoplay audio tag is present
-	if (document.head && document.head.innerHTML.toLowerCase().match("<audio autoplay=(.|)(\"|\'|)autoplay")) redFlags++;
-	if (document.body && document.body.innerHTML.toLowerCase().match("<audio autoplay=(.|)(\"|\'|)autoplay")) redFlags++;
+	if (document.head && document.head.innerHTML.toLowerCase().match("<audio.+autoplay=(.|)(\"|\'|)autoplay")) redFlags++;
+	if (document.body && document.body.innerHTML.toLowerCase().match("<audio.+autoplay=(.|)(\"|\'|)autoplay")) redFlags++;
 
 	// flag if an iframe audio tag is present
-	if (document.head && document.head.innerHTML.toLowerCase().match("<iframe src=(.|)(\"|\').+\.(mp3|mpga|aac|ogg)")) redFlags++;
-	if (document.body && document.body.innerHTML.toLowerCase().match("<iframe src=(.|)(\"|\').+\.(mp3|mpga|aac|ogg)")) redFlags++;
+	if (document.head && document.head.innerHTML.toLowerCase().match("<iframe.+src=(.|)(\"|\').+\.(mp3|mpga|aac|ogg).+>")) redFlags++;
+	if (document.body && document.body.innerHTML.toLowerCase().match("<iframe.+src=(.|)(\"|\').+\.(mp3|mpga|aac|ogg).+>")) redFlags++;
 
 	// Get all inline script tags, and check whether they contain obfuscated JS techniques, and flag them
 	var scripts = document.getElementsByTagName(script);
@@ -139,11 +158,13 @@ function main() {
 		if (script.includes("fromCharCode(") || script.includes("charCodeAt(")) redFlags++;
 		if (script.includes("Aes.cipher")) redFlags++;
 		if (script.includes("Aes.Ctr.decrypt")) redFlags++;
+		if (script.includes("document.write(phone)")) redFlags++;
 		var numberOfEncodedSigns = (script.match(/%/g) || []).length;
 		if (numberOfEncodedSigns >= 50) redFlags++;
 		var numberOfBackSlashes = (script.match(/\\/g) || []).length;
 		if (numberOfBackSlashes >= 50) redFlags++;
 		if (script.includes("document.documentElement.requestFullscreen") || script.includes("document.documentElement.mozRequestFullScreen")) redFlags++;
+		if (script.includes("\[\"pushState\"\, \"onbeforeunload\"\, \"\"\, \"returnValue\"\, \"onload\"\, \"toString\"\]")) redFlags++;
 		//console.log("flagged suspicious js")
 	}
 
@@ -155,7 +176,7 @@ function main() {
 
 	// TODO: Create multiple phrase arrays with differing weights, and possibly implement levenstein distance, and arrays of definite collocations
 	// Scan the page for commonly used phrases
-	var phrases = ["alert from microsoft", "windows computer is infected", "microsoft windows warning", "your computer was locked", "this computer is blocked", "your computer is blocked", "your computer has been blocked", "your computer has been infected", "your computer has alerted us", "call microsoft toll free", "windows has detected", "your system detected", "please call microsoft", "ransomware virus has infected your system", "trying to steal financial information", "information is being stolen", "removal process over the phone", "prevent your computer from being disabled", "pornographic spyware", "malicious virus", "malicious malware", "mac os is infected", "if you leave your mac os will remain damaged", "if you leave this site your mac os will remain damaged", "phishing/spyware were found on your mac", "banking information are at risk", "if you close this page, your computer access will be disabled", "your computer access will be disabled to prevent further damage", "call us within the next 5 minutes to prevent your computer from being disabled", "enter windows registration key to unblock", "do not close this window and restart your computer", "your computer's registration key is unblocked", "has been blocked under instructions of a competent us government authority", "under this url is an offence in law", "contact microsoft engineer", "do not ignore this important warning", "suspicious activity detected on your ip address", "due to harmful virus installed in your computer", "contact microsoft helpline to reactivate your computer", "this window is sending virus over the internet", "is hacked or used from undefined location", "your system detected some unusual activity", "it might harm your computer data and track your financial activities", "there is a system file missing due to some harmfull virus", "debug malware error, system failure", "the following data may be compromised", "do not ignore this critical alert", "your computer access will be disabled to prevent further damage to our network", "our engineers can guide you through the phone removal process", "microsoft security tollfree", "error # dt00X02", "error # dt00X2", "contact_microsoft_support", "system_protect - protect_error", "to secure your data and windows system click here", "windows operating system alert", "windows & internet browser updates are needed to patch new security flaws and / or fix bugs in the system", "rdn/yahlover.worm!", "apple security breach!", "your device is being targeted right now", "call apple support (toll-free)", "use this phone number to connect apple technical support", "ios security crash", "error #748b-12", "stop transferring your personal data and photos!", "you close this page, your computer access will be disabled", "for avoid further damage to our network", "our computer has alerted us that it was infected", "learn more about safe browsing get information about", "windows was blocked due to questionable activity", "please stop or restart your computer", "the pre-scan found possible traces of", "your system is at risk of irreversible damage", "scanning and cleaning is advised to prevent further system damage", "microsoft warning alert", "microsoft warning  alert", "mal1cious p0rn0graphic", "your system data has been compromized", "hackers may track your financial activities and get access to your personal files on this system", "this virus is sending your confidential information", "error number #278D5", "we will be forced to disable your computer", "your computer is in critical state", "your iphone has been locked", "has been locked due to detected illegal activity", "immediately call apple support to unlock", "we couldn't activate windows", "ios security crash", "windows is asking for authentication", "call microsoft help desk", "technicians can guide you through the whole process over the phone", "contact our certified windows technicians", "your windows computer is at high risk", "windows security has detected", "the latest software, scan your system, and prevent your files from being deleted", "windows malware detected", "malware detected\/hard drive problem", "do not open internet browser for your security issue", "contact technicians at tollfree helpline", "someone is trying to steal your banking details", "drive safety delete in starting in", "google chrome critical error!", "call google chrome", "your information (for example, passwords, messages, and credit cards) have been stolen", "experienced technicians can help you activate", "technicians will access your computer 100% securely", "remotely activate your AV protection for you", "download your active subscription", "lot of antivirus software’s is available in the market", "keeps your computer protected in very a simple way", "in almost all the latest microsoft operating systems", "data in your computer are always on the verge of risk", "we analyze different errors and then we resolve them", "[OS_NAME] の問題を修復する方法", "windows-hat einige verdächtige", "aktivitäten von ihrer ip-adresse erkannt", "debug browser spyware 895-system 32.exe", "please contact Microsoft certified technicians to rectify the issue", "do not use any internet based services", "einige viren und spyware haben eine sicherheitslücke", "error # dw6vb37", "su ordenador está bloqueado", "no ignore este mensaje de error", "windows defender está examinando el equipo", "security system has detected the threatening attempt to gain access", "perform temporary block of all of your accounts", "millions of viruses seeking to exploit security loopholes to access private information on your computers", "is an independent provider of technical support for computer", "is an independent software reseller and we provide softwares and support", "is a reviews, information and self-help website providing troubleshooting", "to immediately rectify issue and prevent data loss", "hard drive safety delete starting in", "your hard drive will be deleted if you close this page", "you have a koobface virus", "268D3-XC00037 virus", "collectively, our team is able to handle a very wide array of tech issues", "si ricorda che una volta rubati questi dati potrebbero essere utilizzati per secondi fini", "segua le indicazioni fornite dall'operatore", "your pc is heavily damaged", "please download the pc cleanup application to remove", "ransomware 2.0", "trojan.win32.sendip.15", "@*fg/windows.exe", "@*fg\\windows.exe", "windowsが深刻な損傷を受けています", "コンピュータからウイルスを削除するには、Advanced PC Fixer", "e.tre456_worm_Windows", "を発見しましたことで破損営業システム", "タップスネーク", "tapsnake; crondns", "dubfish.icv", "/os/apps/snake.icv", "apps/hidden/system32/x/snake.exe", "our diagnosis shows that your computer still has errors", "call us now to get 1 year subscription of advanced pc care for free", "ask for your free pc diagnosis by our award wining technical team", "ie security update...", "edge security update...", "firefox security update...", "chrome security update...", "your subscription to mcafee total protection for windows has expired", "windows security center: your mcafee subscription has expired", "you have been randomly selected to test the new iphone", "You are invited to test our new iPhone", "your ip address - has been randomly selected", "your ip address has been randomly selected", "access to your computer has been restricted", "error # 3658d5546db22ca", "windows 7 driver optimizer", "windows 8 driver optimizer", "windows 10 driver optimizer", "driversupport is a five star rated download", "your computer has been locked", "system activation error code: 0x44578", "might infected by the trojans", "because system activation key has expired & your information", "I lost all hope once I lost all of my messages. Luckily,", "When none of my password recovery processes were working,", "your video player for windows might be out of date!", "your windows system is damaged", "your version of software is damaged and obsolete", "click on the \"update\" button to install the newest software to scan and protect your files from being deleted", "the immediate removal of the viruses is required to prevent further system damage, loss of apps, photos, or other files", "please download the reimage repair application to remove", "ERROR # 268d3x8938", "ERROR # MS-SYSINFO32", "microsoft diagnostics ip address:", "connects you to an independent third party service provider of technical support", "I don’t have enough knowledge about the installation process but with the help of right technician it became possible for me without any error", "We ensure Word, Excel, PPT or Outlook help you to take right conclusions timely.", "Our Support helps to work with latest version of MS office tools anytime as it arrives.", "We are here to assist you with different MS Office problems you are facing", "send otp to support team", "your antivirus software requires an update", "dear chrome user, congratulations", "dear firefox user, congratulations", "dear safari user, congratulations", "dear opera user, congratulations", "dear windows user, the website you have recently visited may have downloaded the malware and virus", "please do not try to shut down or restart your computer.it may lock your computer permanently or erase your hard disk", "your tcp connection was blocked by your windows security system", "windows defender alert : error code # 0x3e7", "Microsoft Security Tollfree", "Why we blocked your computer?", "Enter Windows registration key to unblock", "windows update can not continue as your software copy is expired\/corrupt", "error code: 0x00aem001489", "Blue Screen Error 0x000000CE", "for the purpose of verification enter your windows product key", "Error # XR01F5", "Your computer has alerted us that it has been infected with a Pornographic Spyware"];
+	var phrases = ["alert from microsoft", "windows computer is infected", "microsoft windows warning", "your computer was locked", "this computer is blocked", "your computer is blocked", "your computer has been blocked", "your computer has been infected", "your computer has alerted us", "call microsoft toll free", "windows has detected", "your system detected", "please call microsoft", "ransomware virus has infected your system", "trying to steal financial information", "information is being stolen", "removal process over the phone", "prevent your computer from being disabled", "pornographic spyware", "mac os is infected", "if you leave your mac os will remain damaged", "if you leave this site your mac os will remain damaged", "phishing/spyware were found on your mac", "banking information are at risk", "if you close this page, your computer access will be disabled", "your computer access will be disabled to prevent further damage", "call us within the next 5 minutes to prevent your computer from being disabled", "enter windows registration key to unblock", "do not close this window and restart your computer", "your computer's registration key is unblocked", "has been blocked under instructions of a competent us government authority", "under this url is an offence in law", "contact microsoft engineer", "do not ignore this important warning", "suspicious activity detected on your ip address", "due to harmful virus installed in your computer", "contact microsoft helpline to reactivate your computer", "this window is sending virus over the internet", "is hacked or used from undefined location", "your system detected some unusual activity", "it might harm your computer data and track your financial activities", "there is a system file missing due to some harmfull virus", "debug malware error, system failure", "the following data may be compromised", "do not ignore this critical alert", "your computer access will be disabled to prevent further damage to our network", "our engineers can guide you through the phone removal process", "microsoft security tollfree", "error # dt00X02", "error # dt00X2", "contact_microsoft_support", "system_protect - protect_error", "to secure your data and windows system click here", "windows operating system alert", "windows & internet browser updates are needed to patch new security flaws and / or fix bugs in the system", "rdn/yahlover.worm!", "apple security breach!", "your device is being targeted right now", "call apple support (toll-free)", "use this phone number to connect apple technical support", "ios security crash", "error #748b-12", "stop transferring your personal data and photos!", "you close this page, your computer access will be disabled", "for avoid further damage to our network", "our computer has alerted us that it was infected", "learn more about safe browsing get information about", "windows was blocked due to questionable activity", "please stop or restart your computer", "the pre-scan found possible traces of", "your system is at risk of irreversible damage", "scanning and cleaning is advised to prevent further system damage", "microsoft warning alert", "microsoft warning  alert", "mal1cious p0rn0graphic", "your system data has been compromized", "hackers may track your financial activities and get access to your personal files on this system", "this virus is sending your confidential information", "error number #278D5", "we will be forced to disable your computer", "your computer is in critical state", "your iphone has been locked", "has been locked due to detected illegal activity", "immediately call apple support to unlock", "we couldn't activate windows", "ios security crash", "windows is asking for authentication", "call microsoft help desk", "technicians can guide you through the whole process over the phone", "contact our certified windows technicians", "your windows computer is at high risk", "windows security has detected", "the latest software, scan your system, and prevent your files from being deleted", "windows malware detected", "malware detected\/hard drive problem", "do not open internet browser for your security issue", "contact technicians at tollfree helpline", "someone is trying to steal your banking details", "drive safety delete in starting in", "google chrome critical error!", "call google chrome", "your information (for example, passwords, messages, and credit cards) have been stolen", "experienced technicians can help you activate", "technicians will access your computer 100% securely", "remotely activate your AV protection for you", "download your active subscription", "lot of antivirus software’s is available in the market", "keeps your computer protected in very a simple way", "in almost all the latest microsoft operating systems", "data in your computer are always on the verge of risk", "we analyze different errors and then we resolve them", "[OS_NAME] の問題を修復する方法", "windows-hat einige verdächtige", "aktivitäten von ihrer ip-adresse erkannt", "debug browser spyware 895-system 32.exe", "please contact Microsoft certified technicians to rectify the issue", "do not use any internet based services", "einige viren und spyware haben eine sicherheitslücke", "error # dw6vb37", "su ordenador está bloqueado", "no ignore este mensaje de error", "windows defender está examinando el equipo", "security system has detected the threatening attempt to gain access", "perform temporary block of all of your accounts", "millions of viruses seeking to exploit security loopholes to access private information on your computers", "is an independent provider of technical support for computer", "is an independent software reseller and we provide softwares and support", "is a reviews, information and self-help website providing troubleshooting", "to immediately rectify issue and prevent data loss", "hard drive safety delete starting in", "your hard drive will be deleted if you close this page", "you have a koobface virus", "268D3-XC00037 virus", "collectively, our team is able to handle a very wide array of tech issues", "si ricorda che una volta rubati questi dati potrebbero essere utilizzati per secondi fini", "segua le indicazioni fornite dall'operatore", "your pc is heavily damaged", "please download the pc cleanup application to remove", "ransomware 2.0", "trojan.win32.sendip.15", "@*fg/windows.exe", "@*fg\\windows.exe", "windowsが深刻な損傷を受けています", "コンピュータからウイルスを削除するには、Advanced PC Fixer", "e.tre456_worm_Windows", "を発見しましたことで破損営業システム", "タップスネーク", "tapsnake; crondns", "dubfish.icv", "/os/apps/snake.icv", "apps/hidden/system32/x/snake.exe", "our diagnosis shows that your computer still has errors", "call us now to get 1 year subscription of advanced pc care for free", "ask for your free pc diagnosis by our award wining technical team", "ie security update...", "edge security update...", "firefox security update...", "chrome security update...", "your subscription to mcafee total protection for windows has expired", "windows security center: your mcafee subscription has expired", "you have been randomly selected to test the new iphone", "You are invited to test our new iPhone", "your ip address - has been randomly selected", "your ip address has been randomly selected", "access to your computer has been restricted", "error # 3658d5546db22ca", "windows 7 driver optimizer", "windows 8 driver optimizer", "windows 10 driver optimizer", "driversupport is a five star rated download", "your computer has been locked", "system activation error code: 0x44578", "might infected by the trojans", "because system activation key has expired & your information", "I lost all hope once I lost all of my messages. Luckily,", "When none of my password recovery processes were working,", "your video player for windows might be out of date!", "your windows system is damaged", "your version of software is damaged and obsolete", "click on the \"update\" button to install the newest software to scan and protect your files from being deleted", "the immediate removal of the viruses is required to prevent further system damage, loss of apps, photos, or other files", "please download the reimage repair application to remove", "ERROR # 268d3x8938", "ERROR # MS-SYSINFO32", "microsoft diagnostics ip address", "connects you to an independent third party service provider of technical support", "I don’t have enough knowledge about the installation process but with the help of right technician it became possible for me without any error", "We ensure Word, Excel, PPT or Outlook help you to take right conclusions timely.", "Our Support helps to work with latest version of MS office tools anytime as it arrives.", "We are here to assist you with different MS Office problems you are facing", "send otp to support team", "your antivirus software requires an update", "dear chrome user, congratulations", "dear firefox user, congratulations", "dear safari user, congratulations", "dear opera user, congratulations", "dear windows user, the website you have recently visited may have downloaded the malware and virus", "please do not try to shut down or restart your computer.it may lock your computer permanently or erase your hard disk", "your tcp connection was blocked by your windows security system", "windows defender alert : error code # 0x3e7", "Microsoft Security Tollfree", "Why we blocked your computer?", "Enter Windows registration key to unblock", "windows update can not continue as your software copy is expired\/corrupt", "error code: 0x00aem001489", "Blue Screen Error 0x000000CE", "for the purpose of verification enter your windows product key", "Error # XR01F5", "Your computer has alerted us that it has been infected with a Pornographic Spyware", "windows wurde aufgrund verdächtiger aktivitäten blockiert", "the window's registration key is illegal", "your apple device has been locked due to security reasons", "ihr system ist durch die ungewöhnliche", "This window is using pirated software", "we block this computer for your security", "Don't close this window! It's important!"];
 
 	// special characters for re-writing scam phrase text
 	// German: ä, ö, ü
@@ -181,9 +202,11 @@ function blockPage() {
 	if (shouldBlockPage && !finishedBlocking) {
 		// Stop page from loading further
 		window.stop();
+
 		// Clear the header
 		var head = document.getElementsByTagName('head');
 		if (head[0]) head[0].innerHTML = "<title>" + document.title + "</title>";
+
 		// Rewrite the body
 		if (!document.body) {
 			setTimeout(() => {
@@ -194,21 +217,63 @@ function blockPage() {
 		else {
 			fillBody();
 		}
-		// Rewrite problematic JS functions
-		resetFullscreen();
-		document.write = null;
-		document.body.appendChild = null;
-		window.onbeforeunload = null;
-		window.history.pushState = null
-		window.eval = null;
-		window.alert = null;
-		if (window.jQuery) $ = null;
+
 		// Finished
 		finishedBlocking = true;
 	}
 }
 
+function overrideJS() {
+	window.open = null;
+	window.addEventListener = null;
+	document.addEventListener = null;
+	document.body.addEventListener = null;
+	document.write = null;
+	document.createElement = null;
+	document.body.appendChild = null;
+	window.onbeforeunload = null;
+	window.history.pushState = null
+	window.eval = null;
+	window.alert = null;
+
+	if (window.jQuery) {
+		$ = null;
+		window.jQuery = null;
+	}
+
+	// Override fullscreen functions
+	var elem = document.documentElement;
+	if (elem.requestFullscreen) elem.requestFullscreen = null;
+	// Firefox
+	if (elem.mozRequestFullScreen) elem.mozRequestFullScreen = null;
+	// Chrome, Safari and Opera
+	if (elem.webkitRequestFullscreen) elem.webkitRequestFullscreen = null;
+	/* IE/Edge */
+	if (elem.msRequestFullscreen) elem.msRequestFullscreen = null;
+
+	// Exit fullscreen functions
+	setInterval(() => {
+		try {
+			if (document.exitFullscreen) document.exitFullscreen();
+			// Firefox
+			if (document.mozCancelFullScreen) document.mozCancelFullScreen();
+			// Chrome, Safari and Opera
+			if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+			// IE/Edge
+			if (document.msExitFullscreen) document.msExitFullscreen();
+		} catch (e) {
+			// console.error(e);
+		}
+	}, 1000);
+}
+
 function fillBody() {
+	// rewrite the document with itself if it already existed, to remove event listeners
+	var old_element = document.body;
+	var new_element = old_element.cloneNode(true);
+	old_element.parentNode.replaceChild(new_element, old_element);
+
+	// rewrite the document body contents with our warning message
 	document.body.innerHTML = "<center><h2>Suspicious Site Blocked by <a href='#' id='authorlink' style='color:#FFFFFF;'><u>Scam Site Blocker</u></a></h2><br /></center>";
 	document.body.innerHTML += "<center>This website may be operated by scammers. Go back or close this page.<br /><br /></center>";
 	document.body.innerHTML += "<center>If you think this is an error, confirm the website address before ignoring this warning.<br /><br /></center>";
@@ -219,32 +284,9 @@ function fillBody() {
 	document.getElementById("ignorePage").style.padding = "6px";
 	document.getElementById("authorlink").addEventListener("click", openAuthorPage);
 	document.getElementById("ignorePage").addEventListener("click", ignorePage);
-}
 
-function resetFullscreen() {
-	setTimeout(() => {
-		// Override fullscreen functions
-		var elem = document.documentElement;
-		if (elem.requestFullscreen) {
-			elem.requestFullscreen = null;
-		} else if (elem.mozRequestFullScreen) { /* Firefox */
-			elem.mozRequestFullScreen = null;
-		} else if (elem.webkitRequestFullscreen) { /* Chrome, Safari and Opera */
-			elem.webkitRequestFullscreen = null;
-		} else if (elem.msRequestFullscreen) { /* IE/Edge */
-			elem.msRequestFullscreen = null;
-		}
-		// Exit fullscreen
-		if (document.exitFullscreen) {
-			document.exitFullscreen();
-		} else if (document.mozCancelFullScreen) { /* Firefox */
-			document.mozCancelFullScreen();
-		} else if (document.webkitExitFullscreen) { /* Chrome, Safari and Opera */
-			document.webkitExitFullscreen();
-		} else if (document.msExitFullscreen) { /* IE/Edge */
-			document.msExitFullscreen();
-		}
-	}, 100);
+	// inject the javascript override code into the page
+	injectCode(overrideJS);
 }
 
 // open greasyfork page
