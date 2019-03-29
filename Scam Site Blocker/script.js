@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Scam Site Blocker
 // @namespace    blockWinScamSites
-// @version      4.0
+// @version      4.1
 // @description  Block potential windows and mac scam site popups and redirects
 // @author       Kai Krause <kaikrause95@gmail.com>
 // @include      *
@@ -11,11 +11,33 @@
 // ==/UserScript==
 
 // ---------------------
+// AUTOFILL URL REPORTING
+// ---------------------
+
+if (location.hostname.toLowerCase().startsWith("safebrowsing.google.") && location.href.includes("/safebrowsing")) {
+	window.addEventListener("DOMContentLoaded", function load() {
+		var badUrl = new URL (location.href).searchParams.get("website");
+		badUrl = decodeURIComponent(badUrl);
+		document.getElementById("url").value = badUrl;
+		document.getElementById("falseneg").checked = true;
+
+		var textareas = document.getElementsByTagName("textarea");
+		for (var i = 0; i < textareas.length; i++) {
+			if (textareas[i].name && textareas[i].name === "dq") {
+				textareas[i].value = "Possible scam website that compels visitors to call a number, and make a payment in order to unblock their computer";
+				break;
+			}
+		}
+	}, false);
+}
+
+// ---------------------
 // PRE-RUN
 // ---------------------
 
 // do not run on these excluded websites
 var exclusions = ["microsoft.com", "apple.com", "github.com", "greasyfork.org", "wikipedia.org", "reddit.com", "google.com", "live.com", "mozilla.org", "youtube.com", "facebook.com", "twitter.com", "mcafee.com", "mcafeesecure.com", "mcafeemobilesecurity.com", "norton.com", "avg.com", "avast.com", "avira.com", "instagram.com", "kaspersky.com", "bitdefender.com", "malwarebytes.com", "sophos.com", "comodo.com", "av-test.org", "forbes.com", "howtogeek.com", "pcworld.com", "pandasecurity.com", "eset.com", "f-secure.com", "clamwin.com", "360totalsecurity.com", "washingtonpost.com", "techspot.com", "vice.com", "theverge.com", "nytimes.com", "bloomberg.com", "discordapp.com", "skype.com", "outlook.com", "gmail.com", "theguardian.com"];
+
 var currentURL = location.hostname.split(".");
 currentURL = currentURL[currentURL.length-2] + "." + currentURL[currentURL.length-1]
 if (exclusions.indexOf(currentURL) > -1) return;
@@ -276,14 +298,17 @@ function fillBody() {
 	// rewrite the document body contents with our warning message
 	document.body.innerHTML = "<center><h2>Suspicious Site Blocked by <a href='#' id='authorlink' style='color:#FFFFFF;'><u>Scam Site Blocker</u></a></h2><br /></center>";
 	document.body.innerHTML += "<center>This website may be operated by scammers. Go back or close this page.<br /><br /></center>";
-	document.body.innerHTML += "<center>If you think this is an error, confirm the website address before ignoring this warning.<br /><br /></center>";
-	document.body.innerHTML += "<center><button id='ignorePage'>Ignore Warning</button></center>";
+	document.body.innerHTML += "<center>If you think otherwise, confirm the website address before ignoring this warning.<br /><br /></center>";
+	document.body.innerHTML += "<center>If this warning seems accurate, please submit a report to Google to help protect others.<br /><br /></center>";
+	document.body.innerHTML += "<center><button id='ignorePage'>Ignore Warning</button> <button id='reportPage'>Report to Google</button></center>";
 	document.body.style.fontSize = "18px";
 	document.body.style.color = "#FFFFFF";
 	document.body.style.backgroundColor = "#99000F";
-	document.getElementById("ignorePage").style.padding = "6px";
 	document.getElementById("authorlink").addEventListener("click", openAuthorPage);
+	document.getElementById("ignorePage").style.padding = "6px";
 	document.getElementById("ignorePage").addEventListener("click", ignorePage);
+	document.getElementById("reportPage").style.padding = "6px";
+	document.getElementById("reportPage").addEventListener("click", reportPage);
 
 	// inject the javascript override code into the page
 	injectCode(overrideJS);
@@ -300,6 +325,12 @@ function ignorePage() {
 		GM_setValue(location.hostname, "ignored");
 		location.reload();
 	}
+}
+
+// report the current page
+function reportPage() {
+	var reportToUrl = "https://safebrowsing.google.com/safebrowsing/report_general/?" + "website=" + encodeURIComponent(window.location.href);
+	window.open(reportToUrl);
 }
 
 // check if page is ignored
