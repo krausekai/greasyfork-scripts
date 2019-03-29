@@ -181,7 +181,7 @@ function main() {
 		if (script.includes("Aes.cipher")) redFlags++;
 		if (script.includes("Aes.Ctr.decrypt")) redFlags++;
 		if (script.includes("document.write(phone)")) redFlags++;
-		if (script.includes("(p,a,c,k,e,d)")) redFlags++;
+		if (script.includes("\(p,a,c,k,e,d\)")) redFlags++;
 		var numberOfEncodedSigns = (script.match(/%/g) || []).length;
 		if (numberOfEncodedSigns >= 50) redFlags++;
 		var numberOfBackSlashes = (script.match(/\\/g) || []).length;
