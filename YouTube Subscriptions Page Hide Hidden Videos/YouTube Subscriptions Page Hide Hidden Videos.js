@@ -2,13 +2,16 @@
 // @name         YouTube Subscriptions Page: Hide Hidden Videos
 // @namespace    hideHiddenVideos_kk
 // @description  Once a video is hidden, automatically hide the video as well
-// @version      0.1
+// @version      0.2
 // @author       Kai Krause <kaikrause95@gmail.com>
-// @match        http://www.youtube.com/feed/subscriptions*
-// @match        https://www.youtube.com/feed/subscriptions*
+// @match        http://*.youtube.com/*
+// @match        https://*.youtube.com/*
+// @run-at       document-start
 // @grant        none
-// @run-at       document-end
 // ==/UserScript==
+
+// Youtube's inline loading method may confuse the browser
+if (!location.href.includes('youtube.com/feed/subscriptions')) return;
 
 function autoHideHidden () {
 	var renderers = document.getElementsByTagName('ytd-grid-video-renderer');
