@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Scam Site Blocker
 // @namespace    blockWinScamSites
-// @version      4.2
+// @version      4.3
 // @description  Block potential windows and mac scam site popups and redirects
 // @author       Kai Krause <kaikrause95@gmail.com>
 // @include      *
@@ -291,10 +291,18 @@ function overrideJS() {
 }
 
 function fillBody() {
+	// reset document head
+	var head = document.getElementsByTagName('head');
+	if (head && head[0]) head[0].innerHTML = "<title>" + document.title + "</title>";
+
 	// rewrite the document with itself if it already existed, to remove event listeners
 	var old_element = document.body;
 	var new_element = old_element.cloneNode(true);
 	old_element.parentNode.replaceChild(new_element, old_element);
+
+	// reset styling on the body element
+	document.body.className = "";
+	document.body.style = "";
 
 	// rewrite the document body contents with our warning message
 	document.body.innerHTML = "<center><h2>Suspicious Site Blocked by <a href='#' id='authorlink' style='color:#FFFFFF;'><u>Scam Site Blocker</u></a></h2><br /></center>";
