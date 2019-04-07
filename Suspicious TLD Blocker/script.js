@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Suspicious Website TLD Blocker
 // @namespace    blockSuspiciousTLDs
-// @version      1.3
+// @version      1.4
 // @description  Block websites that use domain extensions often associated with spam, scams, and malware.
 // @author       Kai Krause <kaikrause95@gmail.com>
 // @include      *
@@ -39,22 +39,36 @@ if (badTLDs.indexOf(thisTLD) > -1 || genericTLDs.indexOf(thisTLD) > -1) {
 function blockPage() {
 	// Stop page from loading further
 	window.stop();
-	// Clear the header
-	var head = document.getElementsByTagName('head');
-	if (head[0]) head[0].innerHTML = "<title>" + document.title + "</title>";
-	// Rewrite the body
+
+	// Rewrite the page
 	if (!document.body) {
 		setTimeout(() => {
 			document.body = document.createElement("body");
-			fillBody();
+			fillPage();
 		}, 0);
 	}
 	else {
-		fillBody();
+		fillPage();
 	}
 }
 
-function fillBody() {
+function fillPage() {
+	// reset document head
+	var head = document.getElementsByTagName('head');
+	if (head && head[0]) {
+		head[0].innerHTML = "<title>" + document.title + "</title>";
+	}
+
+	// rewrite the document with itself if it already existed, to remove event listeners
+	var old_element = document.body;
+	var new_element = old_element.cloneNode(true);
+	old_element.parentNode.replaceChild(new_element, old_element);
+
+	// reset styling on the body element
+	document.body.className = "";
+	document.body.style = "";
+
+	// rewrite the document body contents with our warning message
 	document.body.innerHTML = "<center><h2>Suspicious Site Blocked by <a href='#' id='authorlink' style='color:#000000;'><u>Supicious TLD Blocker</u></a></h2><br /></center>";
 	document.body.innerHTML += "<center>This website uses a non-standard domain extension and may be malicious. Go back or close this page.<br /><br /></center>";
 	document.body.innerHTML += "<center>If you think this is an error, confirm the website address before ignoring this warning.<br /><br /></center>";

@@ -245,19 +245,15 @@ function blockPage() {
 		// Stop page from loading further
 		window.stop();
 
-		// Clear the header
-		var head = document.getElementsByTagName('head');
-		if (head[0]) head[0].innerHTML = "<title>" + document.title + "</title>";
-
-		// Rewrite the body
+		// Rewrite the page
 		if (!document.body) {
 			setTimeout(() => {
 				document.body = document.createElement("body");
-				fillBody();
+				fillPage();
 			}, 0);
 		}
 		else {
-			fillBody();
+			fillPage();
 		}
 
 		// Finished
@@ -313,7 +309,7 @@ function overrideJS() {
 	}, 1000);
 }
 
-function fillBody() {
+function fillPage() {
 	// reset document head
 	var head = document.getElementsByTagName('head');
 	if (head && head[0]) {
