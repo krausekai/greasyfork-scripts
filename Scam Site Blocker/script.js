@@ -1,12 +1,13 @@
 // ==UserScript==
 // @name         Scam Site Blocker
 // @namespace    blockWinScamSites
-// @version      4.3
+// @version      4.4
 // @description  Block potential windows and mac scam site popups and redirects
 // @author       Kai Krause <kaikrause95@gmail.com>
 // @include      *
 // @grant        GM_setValue
 // @grant        GM_getValue
+// @grant        GM_unsafeWindow
 // @run-at       document-start
 // ==/UserScript==
 
@@ -43,6 +44,18 @@ currentURL = currentURL[currentURL.length-2] + "." + currentURL[currentURL.lengt
 if (exclusions.indexOf(currentURL) > -1) return;
 
 // ---------------------
+// PREVENT TROUBLESOME
+// JS BEFORE DETECTION
+// ---------------------
+
+var print = window.print;
+unsafeWindow.print = null;
+
+function restoreWindowJS() {
+	unsafeWindow.print = print;
+}
+
+// ---------------------
 // HELPER FUNCTIONS
 // ---------------------
 
@@ -73,6 +86,7 @@ var injectCode = function(f) {
 
 // Whether to block the page
 var shouldBlockPage = false;
+if (GM_getValue(location.hostname) && GM_getValue(location.hostname) === "blocked") shouldBlockPage = true;
 
 function main() {
 	if (shouldBlockPage) return;
@@ -223,6 +237,11 @@ function main() {
 var finishedBlocking = false;
 function blockPage() {
 	if (shouldBlockPage && !finishedBlocking) {
+		// in case page is reloaded by javascript that cannot be intuitively blocked
+		// set this page to be blocked immediately on the next opening
+		// instead of waiting for the page to be detected as meeting blocking conditions
+		GM_setValue(location.hostname, "blocked");
+
 		// Stop page from loading further
 		window.stop();
 
@@ -247,6 +266,7 @@ function blockPage() {
 }
 
 function overrideJS() {
+	window.onload = null;
 	window.open = null;
 	window.addEventListener = null;
 	document.addEventListener = null;
@@ -255,9 +275,12 @@ function overrideJS() {
 	document.createElement = null;
 	document.body.appendChild = null;
 	window.onbeforeunload = null;
-	window.history.pushState = null
+	window.history.pushState = null;
 	window.eval = null;
 	window.alert = null;
+	document.querySelector = null;
+	window.onbeforeprint = function() {window.print = null}
+	window.print = null;
 
 	if (window.jQuery) {
 		$ = null;
@@ -293,7 +316,9 @@ function overrideJS() {
 function fillBody() {
 	// reset document head
 	var head = document.getElementsByTagName('head');
-	if (head && head[0]) head[0].innerHTML = "<title>" + document.title + "</title>";
+	if (head && head[0]) {
+		head[0].innerHTML = "<title>" + document.title + "</title>";
+	}
 
 	// rewrite the document with itself if it already existed, to remove event listeners
 	var old_element = document.body;
@@ -321,6 +346,11 @@ function fillBody() {
 
 	// inject the javascript override code into the page
 	injectCode(overrideJS);
+
+	// change head CSP
+	if (head && head[0]) {
+		head[0].innerHTML += "<meta http-equiv=\"Content-Security-Policy\" content=\"default-src \'none\'; script-src \'unsafe-inline\'\"></meta>";
+	}
 }
 
 // open greasyfork page
@@ -351,6 +381,12 @@ if (isPageIgnored !== "ignored") {
 	var interval = setInterval(function() {
 		main();
 		blockPage();
+
+		// Restore JS functionality if page is safe
+		if(!shouldBlockPage && (Date.now() - runTime) / 1000 >= 3) {
+			restoreWindowJS();
+		}
+
 		// Remove interval if page has been blocked, or, the script has run for longer than 3 seconds
 		if(shouldBlockPage || (Date.now() - runTime) / 1000 >= 3) {
 			return clearInterval(interval);
