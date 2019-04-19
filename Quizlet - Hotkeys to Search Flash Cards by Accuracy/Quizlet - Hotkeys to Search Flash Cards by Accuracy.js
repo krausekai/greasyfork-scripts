@@ -3,22 +3,33 @@
 // @namespace   QZLT_flashcardSelectKBMode
 // @description Press the 1-2-3-4 number keys to navigate large decks easily
 // @author      Kai Krause <kaikrause95@gmail.com>
-// @match       http://quizlet.com/*flash-cards/*
-// @match       https://quizlet.com/*flash-cards/*
-// @version     1.5
+// @match       http://*.quizlet.com/*
+// @match       https://*.quizlet.com/*
+// @version     1.6
 // @grant       none
 // ==/UserScript==
 
-window.onload = function(){
-	var titles = document.getElementsByClassName("SetPageTermChunk-title");
+if (!location.pathname.endsWith("-flash-cards/")) return
+
+// Helper function to inject JS code into the page, for page-level access to JS functions and variables
+var injectCode = function(f) {
+	var script = document.createElement("script");
+	script.textContent = "(" + f.toString() + "());";
+	document.head.appendChild(script);
+};
+
+var theCode = function(){
 	var titlesCache = [];
 
-	for (var i = 0; i < titles.length; i++){
-		titles[i].innerHTML += "<a style='visibility:hidden' name='" +  titles[i].textContent + "'></a>";
-		titlesCache.push(titles[i].textContent);
-	}
-
 	function titleSelect(charE) {
+		if (!titlesCache || titlesCache.length === 0) {
+			var titles = document.getElementsByClassName("SetPageTermChunk-title");
+			for (var i = 0; i < titles.length; i++){
+				titles[i].innerHTML += "<a style='visibility:hidden' name='" +  titles[i].textContent + "'></a>";
+				titlesCache.push(titles[i].textContent);
+			}
+		}
+
 		var el = document.activeElement;
 		if (el.tagName.toLowerCase() != 'textarea') {
 			if (charE.keyCode == "49") {
@@ -34,3 +45,5 @@ window.onload = function(){
 	}
 	window.addEventListener("keydown", titleSelect, true);
 }
+
+injectCode(theCode);
