@@ -361,7 +361,7 @@ function fillPage() {
 	document.body.innerHTML += "<center><button id='ignorePage'>Ignore Warning</button> <button id='reportPage'>Report to Google</button></center>";
 	document.body.style.fontSize = "18px";
 	document.body.style.color = "#F2F2F2";
-	document.body.style.backgroundColor = "#8C0E20";
+	document.body.style.backgroundColor = "#931024";
 	document.getElementById("authorlink").addEventListener("click", openAuthorPage);
 	document.getElementById("ignorePage").style.padding = "6px";
 	document.getElementById("ignorePage").addEventListener("click", ignorePage);
