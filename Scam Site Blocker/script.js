@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Scam Site Blocker
 // @namespace    blockWinScamSites
-// @version      5.3
+// @version      5.4
 // @description  Block potential windows and mac scam site popups and redirects
 // @author       Kai Krause <kaikrause95@gmail.com>
 // @include      *
@@ -37,7 +37,7 @@ if (location.hostname.toLowerCase().startsWith("safebrowsing.google.") && locati
 // ---------------------
 
 // do not run on these excluded websites
-var exclusions = ["microsoft.com", "apple.com", "github.com", "greasyfork.org", "wikipedia.org", "reddit.com", "google.com", "live.com", "mozilla.org", "youtube.com", "facebook.com", "twitter.com", "mcafee.com", "mcafeesecure.com", "mcafeemobilesecurity.com", "norton.com", "avg.com", "avast.com", "avira.com", "instagram.com", "kaspersky.com", "bitdefender.com", "malwarebytes.com", "sophos.com", "comodo.com", "av-test.org", "forbes.com", "howtogeek.com", "pcworld.com", "pandasecurity.com", "eset.com", "f-secure.com", "clamwin.com", "360totalsecurity.com", "washingtonpost.com", "techspot.com", "vice.com", "theverge.com", "nytimes.com", "bloomberg.com", "discordapp.com", "skype.com", "outlook.com", "gmail.com", "theguardian.com", "bleepingcomputer.com", "malwaretips.com", "wired.co.uk"];
+var exclusions = ["microsoft.com", "apple.com", "github.com", "greasyfork.org", "wikipedia.org", "reddit.com", "google.com", "live.com", "mozilla.org", "youtube.com", "facebook.com", "twitter.com", "mcafee.com", "mcafeesecure.com", "mcafeemobilesecurity.com", "norton.com", "avg.com", "avast.com", "avira.com", "instagram.com", "kaspersky.com", "bitdefender.com", "malwarebytes.com", "sophos.com", "comodo.com", "av-test.org", "forbes.com", "howtogeek.com", "pcworld.com", "pandasecurity.com", "eset.com", "f-secure.com", "clamwin.com", "360totalsecurity.com", "washingtonpost.com", "techspot.com", "vice.com", "theverge.com", "nytimes.com", "bloomberg.com", "discordapp.com", "skype.com", "outlook.com", "gmail.com", "theguardian.com", "bleepingcomputer.com", "malwaretips.com", "wired.co.uk", "zippyshare.com", "twitch.tv"];
 
 for (i = 0; i < exclusions.length; i++) {
 	if (location.hostname.toLowerCase().endsWith(exclusions[i])) return;
@@ -88,14 +88,18 @@ var injectCode = function(f) {
 var shouldBlockPage = false;
 if (GM_getValue(location.hostname) && GM_getValue(location.hostname) === "blocked") shouldBlockPage = true;
 
+var reasonsToBlock = [];
+
 function main() {
 	if (shouldBlockPage) return;
+
+	reasonsToBlock = [];
 
 	// Block bad URL terms
 	var badUrlTerms = ["call-now1", "call-now2", "firiedge", "ffiedge", "/processdll/", "jook.html", "chr-win-error"];
 	for (let i = 0; i < badUrlTerms.length; i++) {
 		if (location.href.toLowerCase().includes(badUrlTerms[i].toLowerCase())) {
-			console.log("Blocked by URL keyword: " + badUrlTerms[i]);
+			reasonsToBlock.push("Blocked by URL keyword: " + badUrlTerms[i])
 			return shouldBlockPage = true;
 		}
 	}
@@ -128,7 +132,7 @@ function main() {
 			if (title.includes(products[i].toLowerCase())) {
 				for (let x = 0; x < badKeywords.length; x++) {
 					if (title.includes(badKeywords[x].toLowerCase())) {
-						console.log("Blocked by title keyword: " + badKeywords[x]);
+						reasonsToBlock.push("Blocked by title keyword: " + badKeywords[x]);
 						return shouldBlockPage = true;
 					}
 				}
@@ -143,6 +147,7 @@ function main() {
 	for (let i = 0; i < products.length; i++) {
 		if (location.hostname.includes(products[i].toLowerCase())) {
 			//console.log("Site address or page title is related to a product and flagged");
+			reasonsToBlock.push("Red Flag Detected - " + "Site Address/Page Title has term: " + products[i]);
 			redFlags++;
 		}
 	}
@@ -151,6 +156,7 @@ function main() {
 	if (elapsedTime(timer, 1)) {
 		if (title.includes(location.hostname) || title === "") {
 			//console.log("Empty hostname or title flagged");
+			reasonsToBlock.push("Red Flag Detected - " + "Page Title includes URL or is empty");
 			redFlags++;
 		}
 	}
@@ -158,6 +164,7 @@ function main() {
 	// flag IP addresses that do not resolve to domain names
 	if (location.hostname.match(/\d+\.\d+\.\d+\.\d+/)) {
 		//console.log("Hostname flagged");
+		reasonsToBlock.push("Red Flag Detected - " + "URL is an IP address");
 		redFlags++;
 	}
 
@@ -166,6 +173,7 @@ function main() {
 	for (let i = 0; i < badHosts.length; i++) {
 		if (location.hostname.toLowerCase().includes(badHosts[i].toLowerCase())) {
 			//console.log("Web host flagged");
+			reasonsToBlock.push("Red Flag Detected - " + "Bad Website Host: " + badHosts[i]);
 			redFlags++;
 		}
 	}
@@ -175,6 +183,7 @@ function main() {
 	for (let i = 0; i < badUrlTerms.length; i++) {
 		if (location.href.toLowerCase().includes(badUrlTerms[i].toLowerCase())) {
 			//console.log("url term flagged");
+			reasonsToBlock.push("Red Flag Detected - " + "Bad Page URL Term: " + badUrlTerms[i]);
 			redFlags++;
 		}
 	}
@@ -187,36 +196,85 @@ function main() {
 	for (let i = 0; i < badTLDs.length; i++) {
 		if (location.hostname.toLowerCase().endsWith(badTLDs[i].toLowerCase())) {
 			//console.log("TLD Flagged");
+			reasonsToBlock.push("Red Flag Detected - " + "Bad TLD blocked: " + badTLDs[i]);
 			redFlags++;
 		}
 	}
 
 	// flag if an autoplay audio tag is present
-	if (document.head && document.head.innerHTML.toLowerCase().match("<audio.+autoplay=(.|)(\"|\'|)autoplay")) redFlags++;
-	if (document.body && document.body.innerHTML.toLowerCase().match("<audio.+autoplay=(.|)(\"|\'|)autoplay")) redFlags++;
+	if (document.head && document.head.innerHTML.toLowerCase().match("<audio.+autoplay=(.|)(\"|\'|)autoplay")) {
+		reasonsToBlock.push("Red Flag Detected - " + "Autoplaying Audio in Page Head");
+		redFlags++;
+	}
+	if (document.body && document.body.innerHTML.toLowerCase().match("<audio.+autoplay=(.|)(\"|\'|)autoplay")) {
+		reasonsToBlock.push("Red Flag Detected - " + "Autoplaying Audio in Page Body");
+		redFlags++;
+	}
 
 	// flag if an iframe audio tag is present
-	if (document.head && document.head.innerHTML.toLowerCase().match("<iframe.+src=(.|)(\"|\').+\.(mp3|mpga|aac|ogg).+>")) redFlags++;
-	if (document.body && document.body.innerHTML.toLowerCase().match("<iframe.+src=(.|)(\"|\').+\.(mp3|mpga|aac|ogg).+>")) redFlags++;
+	if (document.head && document.head.innerHTML.toLowerCase().match("<iframe.+src=(.|)(\"|\').+\.(mp3|mpga|aac|ogg).+>")) {
+		reasonsToBlock.push("Red Flag Detected - " + "Autoplaying Audio in Page Head");
+		redFlags++;
+	}
+	if (document.body && document.body.innerHTML.toLowerCase().match("<iframe.+src=(.|)(\"|\').+\.(mp3|mpga|aac|ogg).+>")) {
+		reasonsToBlock.push("Red Flag Detected - " + "Autoplaying Audio in Page Body");
+		redFlags++;
+	}
 
 	// Get all inline script tags, and check whether they contain obfuscated JS techniques, and flag them
-	var scripts = document.getElementsByTagName("script");
-	for (let i = 0; i < scripts.length; i++) {
-		var script = scripts[i].innerText;
-		if (script.includes("eval(")) redFlags++;
-		if (script.includes("unescape(")) redFlags++;
-		if (script.includes("fromCharCode(") || script.includes("charCodeAt(")) redFlags++;
-		if (script.includes("Aes.cipher")) redFlags++;
-		if (script.includes("Aes.Ctr.decrypt")) redFlags++;
-		if (script.includes("document.write(phone)")) redFlags++;
-		if (script.includes("\(p\,a\,c\,k\,e\,d\)")) redFlags++;
-		var numberOfEncodedSigns = (script.match(/%/g) || []).length;
-		if (numberOfEncodedSigns >= 50) redFlags++;
-		var numberOfBackSlashes = (script.match(/\\/g) || []).length;
-		if (numberOfBackSlashes >= 50) redFlags++;
-		if (script.includes(".requestFullscreen") || script.includes(".mozRequestFullScreen") || script.includes("webkitfullscreenchange")) redFlags++;
-		if (script.includes("\[\"pushState\"\, \"onbeforeunload\"\, \"\"\, \"returnValue\"\, \"onload\"\, \"toString\"\]")) redFlags++;
-		//console.log("flagged suspicious js")
+	var scriptElements = document.getElementsByTagName("script");
+	var scripts = "";
+	for (let i = 0; i < scriptElements.length; i++) {
+		scripts += scriptElements[i].innerText;
+	}
+
+	scripts = scripts.toLowerCase();
+
+	if (scripts.includes("eval(")) {
+		reasonsToBlock.push("Red Flag Detected - " + "Bad JS: eval()");
+		redFlags += 0.5;
+	}
+	if (scripts.includes("unescape(")) {
+		reasonsToBlock.push("Red Flag Detected - " + "Bad JS: unescape()");
+		redFlags += 0.5;
+	}
+	if (scripts.includes("fromcharcode(") || scripts.includes("charcodeat(")) {
+		reasonsToBlock.push("Red Flag Detected - " + "Bad JS: fromCharCode() or charCodeAt()");
+		redFlags += 0.5;
+	}
+	if (scripts.includes("aes.cipher")) {
+		reasonsToBlock.push("Red Flag Detected - " + "Bad JS: Aes.cipher()");
+		redFlags += 0.5;
+	}
+	if (scripts.includes("aes.ctr.decrypt")) {
+		reasonsToBlock.push("Red Flag Detected - " + "Bad JS: Aes.Ctr.decrypt()");
+		redFlags += 0.5;
+	}
+	if (scripts.includes("document.write(phone)")) {
+		reasonsToBlock.push("Red Flag Detected - " + "Bad JS: document.write(phone)");
+		redFlags ++;
+	}
+	if (scripts.includes("\(p\,a\,c\,k\,e\,d\)")) {
+		reasonsToBlock.push("Red Flag Detected - " + "Bad JS: packed");
+		redFlags += 0.5;
+	}
+	var numberOfEncodedSigns = (scripts.match(/%/g) || []).length;
+	if (numberOfEncodedSigns >= 50) {
+		reasonsToBlock.push("Red Flag Detected - " + "Bad JS: Overly encoded JS with %");
+		redFlags += 0.5;
+	}
+	var numberOfBackSlashes = (scripts.match(/\\/g) || []).length;
+	if (numberOfBackSlashes >= 50) {
+		reasonsToBlock.push("Red Flag Detected - " + "Bad JS: Overly encoded JS with backslash");
+		redFlags += 0.5;
+	}
+	if (scripts.includes(".requestfullscreen") || scripts.includes(".mozrequestfullscreen") || scripts.includes("webkitfullscreenchange")) {
+		reasonsToBlock.push("Red Flag Detected - " + "Bad JS: requestFullscreen");
+		redFlags += 0.5;
+	}
+	if (scripts.includes("\[\"pushstate\"\, \"onbeforeunload\"\, \"\"\, \"returnvalue\"\, \"onload\"\, \"tostring\"\]")) {
+		reasonsToBlock.push("Red Flag Detected - " + "Bad JS: pushState");
+		redFlags += 0.5;
 	}
 
 	// Block the page if there are too many red flags
@@ -245,7 +303,7 @@ function main() {
 	// Detect phrases
 	for (let i = 0; i < phrases.length; i++) {
 		if (page.indexOf(phrases[i].toLowerCase()) > -1) {
-			console.log("Blocked by page phrasing: " + phrases[i]);
+			reasonsToBlock.push("Page blocked due to phrase - " + phrases[i]);
 			return shouldBlockPage = true;
 		}
 	}
@@ -359,10 +417,13 @@ function fillPage() {
 	document.body.style.fontSize = "18px";
 	document.body.style.color = "#F2F2F2";
 	document.body.style.backgroundColor = "#931024";
-	document.getElementById("authorlink").addEventListener("click", openAuthorPage);
 	document.getElementById("ignorePage").style.padding = "6px";
-	document.getElementById("ignorePage").addEventListener("click", ignorePage);
 	document.getElementById("reportPage").style.padding = "6px";
+
+	document.body.innerHTML += "<br /><div id='reasonsForBlock' style='text-align:center'>" + "<div style='font-size: 12px'>" + reasonsToBlock.join("<br />") + "</div></div>"
+
+	document.getElementById("authorlink").addEventListener("click", openAuthorPage);
+	document.getElementById("ignorePage").addEventListener("click", ignorePage);
 	document.getElementById("reportPage").addEventListener("click", reportPage);
 
 	// inject the javascript override code into the page
