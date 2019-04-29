@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Scam Site Blocker
 // @namespace    blockWinScamSites
-// @version      5.5
+// @version      5.7
 // @description  Block potential windows and mac scam site popups and redirects
 // @author       Kai Krause <kaikrause95@gmail.com>
 // @include      *
@@ -37,7 +37,7 @@ if (location.hostname.toLowerCase().startsWith("safebrowsing.google.") && locati
 // ---------------------
 
 // do not run on these excluded websites
-var exclusions = ["microsoft.com", "apple.com", "github.com", "greasyfork.org", "wikipedia.org", "reddit.com", "google.com", "live.com", "mozilla.org", "youtube.com", "facebook.com", "twitter.com", "mcafee.com", "mcafeesecure.com", "mcafeemobilesecurity.com", "norton.com", "avg.com", "avast.com", "avira.com", "instagram.com", "kaspersky.com", "bitdefender.com", "malwarebytes.com", "sophos.com", "comodo.com", "av-test.org", "forbes.com", "howtogeek.com", "pcworld.com", "pandasecurity.com", "eset.com", "f-secure.com", "clamwin.com", "360totalsecurity.com", "washingtonpost.com", "techspot.com", "vice.com", "theverge.com", "nytimes.com", "bloomberg.com", "discordapp.com", "skype.com", "outlook.com", "gmail.com", "theguardian.com", "bleepingcomputer.com", "malwaretips.com", "wired.co.uk", "zippyshare.com", "twitch.tv"];
+var exclusions = ["microsoft.com", "apple.com", "github.com", "greasyfork.org", "wikipedia.org", "reddit.com", "google.com", "live.com", "mozilla.org", "youtube.com", "facebook.com", "twitter.com", "mcafee.com", "mcafeesecure.com", "mcafeemobilesecurity.com", "norton.com", "avg.com", "avast.com", "avira.com", "instagram.com", "kaspersky.com", "bitdefender.com", "malwarebytes.com", "sophos.com", "comodo.com", "av-test.org", "forbes.com", "howtogeek.com", "pcworld.com", "pandasecurity.com", "eset.com", "f-secure.com", "clamwin.com", "360totalsecurity.com", "washingtonpost.com", "techspot.com", "vice.com", "theverge.com", "nytimes.com", "bloomberg.com", "discordapp.com", "skype.com", "outlook.com", "gmail.com", "theguardian.com", "bleepingcomputer.com", "malwaretips.com", "wired.co.uk", "zippyshare.com", "twitch.tv", "imasdk.googleapis.com", "imgur.com", "gfycat.com"];
 
 for (i = 0; i < exclusions.length; i++) {
 	if (location.hostname.toLowerCase().endsWith(exclusions[i])) return;
@@ -154,10 +154,10 @@ function main() {
 
 	// after a second, if the title hasn't updated, flag it
 	if (elapsedTime(timer, 1)) {
-		if (title.includes(location.hostname) || title === "") {
+		if (title === location.hostname || title === "") {
 			//console.log("Empty hostname or title flagged");
-			reasonsToBlock.push("Red Flag Detected - " + "Page Title includes URL or is empty");
-			redFlags++;
+			reasonsToBlock.push("Red Flag Detected - " + "Page Title is URL or is empty");
+			redFlags += 0.5;
 		}
 	}
 
@@ -230,27 +230,27 @@ function main() {
 
 	scripts = scripts.toLowerCase();
 
+	if (scripts.includes("fromcharcode(") || scripts.includes("charcodeat(")) {
+		reasonsToBlock.push("Red Flag Detected - " + "Bad JS: fromCharCode() or charCodeAt()");
+		redFlags += 0.4;
+	}
 	if (scripts.includes("eval(")) {
 		reasonsToBlock.push("Red Flag Detected - " + "Bad JS: eval()");
-		redFlags += 0.5;
+		redFlags += 0.4;
 	}
 	if (scripts.includes("unescape(")) {
 		reasonsToBlock.push("Red Flag Detected - " + "Bad JS: unescape()");
-		redFlags += 0.5;
-	}
-	if (scripts.includes("fromcharcode(") || scripts.includes("charcodeat(")) {
-		reasonsToBlock.push("Red Flag Detected - " + "Bad JS: fromCharCode() or charCodeAt()");
-		redFlags += 0.5;
+		redFlags += 0.4;
 	}
 	var numberOfEncodedSigns = (scripts.match(/%/g) || []).length;
 	if (numberOfEncodedSigns >= 50) {
 		reasonsToBlock.push("Red Flag Detected - " + "Bad JS: Overly encoded JS with %");
-		redFlags += 0.5;
+		redFlags += 0.4;
 	}
 	var numberOfBackSlashes = (scripts.match(/\\/g) || []).length;
 	if (numberOfBackSlashes >= 50) {
 		reasonsToBlock.push("Red Flag Detected - " + "Bad JS: Overly encoded JS with backslash");
-		redFlags += 0.5;
+		redFlags += 0.4;
 	}
 	if (scripts.includes("\(p\,a\,c\,k\,e\,d\)")) {
 		reasonsToBlock.push("Red Flag Detected - " + "Bad JS: packed");
@@ -266,7 +266,7 @@ function main() {
 	}
 	if (scripts.includes(".requestfullscreen") || scripts.includes(".mozrequestfullscreen") || scripts.includes("webkitfullscreenchange")) {
 		reasonsToBlock.push("Red Flag Detected - " + "Bad JS: requestFullscreen");
-		redFlags += 0.5;
+		redFlags ++;
 	}
 	if (scripts.includes("document.write(phone)") || scripts.includes("document.write(getURLParameter(\"p_num\"))")) {
 		reasonsToBlock.push("Red Flag Detected - " + "Bad JS: document.write(phone)");
