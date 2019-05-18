@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Scam Site Blocker
 // @namespace    blockWinScamSites
-// @version      5.8
+// @version      6.0
 // @description  Block potential windows and mac scam site popups and redirects
 // @author       Kai Krause <kaikrause95@gmail.com>
 // @include      *
@@ -37,7 +37,7 @@ if (location.hostname.toLowerCase().startsWith("safebrowsing.google.") && locati
 // ---------------------
 
 // do not run on these excluded websites
-var exclusions = ["microsoft.com", "apple.com", "github.com", "greasyfork.org", "wikipedia.org", "reddit.com", "google.com", "live.com", "mozilla.org", "youtube.com", "facebook.com", "twitter.com", "mcafee.com", "mcafeesecure.com", "mcafeemobilesecurity.com", "norton.com", "avg.com", "avast.com", "avira.com", "instagram.com", "kaspersky.com", "bitdefender.com", "malwarebytes.com", "sophos.com", "comodo.com", "av-test.org", "forbes.com", "howtogeek.com", "pcworld.com", "pandasecurity.com", "eset.com", "f-secure.com", "clamwin.com", "360totalsecurity.com", "washingtonpost.com", "techspot.com", "vice.com", "theverge.com", "nytimes.com", "bloomberg.com", "discordapp.com", "skype.com", "outlook.com", "gmail.com", "theguardian.com", "bleepingcomputer.com", "malwaretips.com", "wired.co.uk", "zippyshare.com", "twitch.tv", "imasdk.googleapis.com", "imgur.com", "gfycat.com", "embedly.com"];
+var exclusions = ["microsoft.com", "apple.com", "github.com", "greasyfork.org", "wikipedia.org", "reddit.com", "google.com", "live.com", "mozilla.org", "youtube.com", "facebook.com", "twitter.com", "mcafee.com", "mcafeesecure.com", "mcafeemobilesecurity.com", "norton.com", "avg.com", "avast.com", "avira.com", "instagram.com", "kaspersky.com", "bitdefender.com", "malwarebytes.com", "sophos.com", "comodo.com", "av-test.org", "forbes.com", "howtogeek.com", "pcworld.com", "pandasecurity.com", "eset.com", "f-secure.com", "clamwin.com", "360totalsecurity.com", "washingtonpost.com", "techspot.com", "vice.com", "theverge.com", "nytimes.com", "bloomberg.com", "discordapp.com", "skype.com", "outlook.com", "gmail.com", "theguardian.com", "bleepingcomputer.com", "malwaretips.com", "wired.co.uk", "zippyshare.com", "twitch.tv", "imasdk.googleapis.com", "imgur.com", "gfycat.com", "embedly.com", "openload.co"];
 
 for (let i = 0; i < exclusions.length; i++) {
 	if (location.hostname.toLowerCase().endsWith(exclusions[i])) return;
@@ -191,7 +191,7 @@ function main() {
 	// flag bad domain TLDs
 	// TODO: consider subdomain.websitename.tld (eg. for .us and .in.net particularly)
 	// https://en.wikipedia.org/wiki/List_of_Internet_top-level_domains#ICANN-era_generic_top-level_domains
-	var badTLDs = ["academy", "accountant", "accountants", "active", "actor", "ads", "adult", "agency", "airforce", "analytics", "apartments", "app", "army", "art", "associates", "attorney", "auction", "audible", "audio", "author", "auto", "autos", "aws", "baby", "band", "bar", "barefoot", "bargains", "baseball", "basketball", "beauty", "beer", "best", "bestbuy", "bet", "bible", "bid", "bike", "bingo", "biz", "black", "blackfriday", "blockbuster", "blog", "blue", "boo", "book", "boots", "bot", "boutique", "box", "broadway", "broker", "build", "builders", "business", "buy", "buzz", "cab", "cafe", "call", "cam", "camera", "camp", "cancerresearch", "capital", "car", "cards", "care", "career", "careers", "cars", "case", "cash", "casino", "catering", "catholic", "center", "cern", "ceo", "cfd", "channel", "chat", "cheap", "christmas", "church", "cipriani", "circle", "city", "claims", "cleaning", "click", "clinic", "clothing", "cloud", "club", "coach", "codes", "coffee", "college", "community", "company", "compare", "computer", "condos", "construction", "consulting", "contact", "contractors", "cooking", "cool", "country", "coupon", "coupons", "courses", "credit", "creditcard", "cruise", "cricket", "cruises", "dad", "dance", "data", "date", "dating", "day", "deal", "deals", "degree", "delivery", "democrat", "dental", "dentist", "design", "dev", "diamonds", "diet", "digital", "direct", "directory", "discount", "diy", "docs", "doctor", "dog", "domains", "dot", "download", "drive", "duck", "earth", "eat", "education", "email", "energy", "engineer", "engineering", "enterprises", "equipment", "estate", "events", "exchange", "expert", "exposed", "express", "fail", "faith", "family", "fan", "fans", "farm", "fashion", "fast", "feedback", "film", "final", "finance", "financial", "fire", "fish", "fishing", "fit", "fitness", "flights", "florist", "flowers", "foo", "food", "foodnetwork", "football", "forsale", "forum", "foundation", "free", "frontdoor", "fun", "fund", "furniture", "fyi", "gallery", "game", "games", "garden", "gdn", "gift", "gifts", "gives", "glass", "global", "gold", "golf", "gop", "graphics", "gripe", "grocery", "group", "guide", "guitars", "guru", "hair", "hangout", "health", "healthcare", "help", "here", "hiphop", "hiv", "hockey", "holdings", "holiday", "homegoods", "homes", "homesense", "horse", "hospital", "host", "hosting", "hot", "hotels", "house", "how", "ice", "icu ", "industries", "ing", "ink", "institute", "insurance", "insure", "international", "investments", "jewelry", "jobs", "joy", "kim", "kitchen", "land", "latino", "lawyer", "lease", "legal", "life", "lifeinsurance", "lighting", "like", "limited", "limo", "link", "live", "living", "loan", "loans", "locker", "lol", "lotto", "love", "luxury", "makeup", "management", "map", "market", "marketing", "markets", "mba", "med", "media", "meet", "meme", "memorial", "men", "menu", "mint", "mobi", "mobile", "mobily", "moe", "mom", "money", "mortgage", "motorcycles", "mov", "movie", "name", "navy", "network", "new", "news", "ninja", "now", "observer", "off", "one", "onl", "online", "ooo", "open", "origins", "page", "partners", "parts", "party", "pay", "pet", "phone", "photo", "photography", "photos", "pics", "pictures", "pid", "pin", "pink", "pizza", "place", "plumbing", "plus", "poker", "porn", "press", "prime", "pro", "productions", "prof", "promo", "properties", "property", "protection", "pub", "qpon", "racing", "radio", "read", "realestate", "realty", "recipes", "red", "rehab", "ren", "rent", "rentals", "repair", "report", "republican", "rest", "restaurant", "review", "reviews", "rich", "rip", "rocks", "rodeo", "room", "rugby", "run", "safe", "sale", "save", "scholarships", "school", "science", "search", "secure", "security", "select", "services", "sex", "sexy", "shoes", "shop", "shopping", "show", "showtime", "silk", "singles", "site", "ski", "skin", "sky", "sling", "smile", "soccer", "social", "software", "solar", "solutions", "song", "space", "spot", "spreadbetting", "storage", "store", "stream", "studio", "study", "style", "sucks", "supplies", "supply", "support", "surf", "surgery", "systems", "talk", "tattoo", "tax", "taxi", "team", "tech", "technology", "tennis", "theater", "theatre", "tickets", "tips", "tires", "today", "tools", "top", "tours", "town", "toys", "trade", "trading", "training", "travelersinsurance", "trust", "tube", "tunes", "uconnect", "university", "vacations", "ventures", "vet", "video", "villas", "vip", "vision", "vodka", "voting", "voyage", "wang", "watch", "watches", "weather", "webcam", "website", "wed", "wedding", "whoswho", "wiki", "win", "wine", "winners", "work", "works", "world", "wow", "wtf", "xxx", "xyz", "yachts", "yoga", "you", "zero", "zone", "shouji", "tushu", "wanggou", "weibo", "xihuan", "arte", "clinique", "luxe", "maison", "moi", "rsvp", "sarl", "epost", "haus", "immobilien", "jetzt", "kaufen", "kinder", "reisen", "schule", "versicherung", "desi", "shiksha", "casa", "immo", "moda", "bom", "passagens", "gratis", "futbol", "hoteles", "juegos", "soy", "tienda", "uno", "viajes", "vuelos", "pw", "gq", "cf", "us", "ga", "ml", "tk", "in.net", "ru", "xin", "zip", "ws", "dk"];
+	var badTLDs = ["academy", "accountant", "accountants", "active", "actor", "ads", "adult", "agency", "airforce", "analytics", "apartments", "app", "army", "art", "associates", "attorney", "auction", "audible", "audio", "author", "auto", "autos", "aws", "baby", "band", "bar", "barefoot", "bargains", "baseball", "basketball", "beauty", "beer", "best", "bestbuy", "bet", "bible", "bid", "bike", "bingo", "biz", "black", "blackfriday", "blockbuster", "blog", "blue", "boo", "book", "boots", "bot", "boutique", "box", "broadway", "broker", "build", "builders", "business", "buy", "buzz", "cab", "cafe", "call", "cam", "camera", "camp", "cancerresearch", "capital", "car", "cards", "care", "career", "careers", "cars", "case", "cash", "casino", "catering", "catholic", "center", "cern", "ceo", "cfd", "channel", "chat", "cheap", "christmas", "church", "cipriani", "circle", "city", "claims", "cleaning", "click", "clinic", "clothing", "cloud", "club", "coach", "codes", "coffee", "college", "community", "company", "compare", "computer", "condos", "construction", "consulting", "contact", "contractors", "cooking", "cool", "country", "coupon", "coupons", "courses", "credit", "creditcard", "cruise", "cricket", "cruises", "dad", "dance", "data", "date", "dating", "day", "deal", "deals", "degree", "delivery", "democrat", "dental", "dentist", "design", "dev", "diamonds", "diet", "digital", "direct", "directory", "discount", "diy", "docs", "doctor", "dog", "domains", "dot", "download", "drive", "duck", "earth", "eat", "education", "email", "energy", "engineer", "engineering", "enterprises", "equipment", "estate", "events", "exchange", "expert", "exposed", "express", "fail", "faith", "family", "fan", "fans", "farm", "fashion", "fast", "feedback", "film", "final", "finance", "financial", "fire", "fish", "fishing", "fit", "fitness", "flights", "florist", "flowers", "foo", "food", "foodnetwork", "football", "forsale", "forum", "foundation", "free", "frontdoor", "fun", "fund", "furniture", "fyi", "gallery", "game", "games", "garden", "gdn", "gift", "gifts", "gives", "glass", "global", "gold", "golf", "gop", "graphics", "gripe", "grocery", "group", "guide", "guitars", "guru", "hair", "hangout", "health", "healthcare", "help", "here", "hiphop", "hiv", "hockey", "holdings", "holiday", "homegoods", "homes", "homesense", "horse", "hospital", "host", "hosting", "hot", "hotels", "house", "how", "ice", "icu", "industries", "ing", "ink", "institute", "insurance", "insure", "international", "investments", "jewelry", "jobs", "joy", "kim", "kitchen", "land", "latino", "lawyer", "lease", "legal", "life", "lifeinsurance", "lighting", "like", "limited", "limo", "link", "live", "living", "loan", "loans", "locker", "lol", "lotto", "love", "luxury", "makeup", "management", "map", "market", "marketing", "markets", "mba", "med", "media", "meet", "meme", "memorial", "men", "menu", "mint", "mobi", "mobile", "mobily", "moe", "mom", "money", "mortgage", "motorcycles", "mov", "movie", "name", "navy", "network", "new", "news", "ninja", "now", "observer", "off", "one", "onl", "online", "ooo", "open", "origins", "page", "partners", "parts", "party", "pay", "pet", "phone", "photo", "photography", "photos", "pics", "pictures", "pid", "pin", "pink", "pizza", "place", "plumbing", "plus", "poker", "porn", "press", "prime", "pro", "productions", "prof", "promo", "properties", "property", "protection", "pub", "qpon", "racing", "radio", "read", "realestate", "realty", "recipes", "red", "rehab", "ren", "rent", "rentals", "repair", "report", "republican", "rest", "restaurant", "review", "reviews", "rich", "rip", "rocks", "rodeo", "room", "rugby", "run", "safe", "sale", "save", "scholarships", "school", "science", "search", "secure", "security", "select", "services", "sex", "sexy", "shoes", "shop", "shopping", "show", "showtime", "silk", "singles", "site", "ski", "skin", "sky", "sling", "smile", "soccer", "social", "software", "solar", "solutions", "song", "space", "spot", "spreadbetting", "storage", "store", "stream", "studio", "study", "style", "sucks", "supplies", "supply", "support", "surf", "surgery", "systems", "talk", "tattoo", "tax", "taxi", "team", "tech", "technology", "tennis", "theater", "theatre", "tickets", "tips", "tires", "today", "tools", "top", "tours", "town", "toys", "trade", "trading", "training", "travelersinsurance", "trust", "tube", "tunes", "uconnect", "university", "vacations", "ventures", "vet", "video", "villas", "vip", "vision", "vodka", "voting", "voyage", "wang", "watch", "watches", "weather", "webcam", "website", "wed", "wedding", "whoswho", "wiki", "win", "wine", "winners", "work", "works", "world", "wow", "wtf", "xxx", "xyz", "yachts", "yoga", "you", "zero", "zone", "shouji", "tushu", "wanggou", "weibo", "xihuan", "arte", "clinique", "luxe", "maison", "moi", "rsvp", "sarl", "epost", "haus", "immobilien", "jetzt", "kaufen", "kinder", "reisen", "schule", "versicherung", "desi", "shiksha", "casa", "immo", "moda", "bom", "passagens", "gratis", "futbol", "hoteles", "juegos", "soy", "tienda", "uno", "viajes", "vuelos", "pw", "gq", "cf", "us", "ga", "ml", "tk", "in.net", "ru", "xin", "zip", "ws", "dk"];
 
 	for (let i = 0; i < badTLDs.length; i++) {
 		if (location.hostname.toLowerCase().endsWith(badTLDs[i].toLowerCase())) {
@@ -232,25 +232,25 @@ function main() {
 
 	if (scripts.includes("fromcharcode(") || scripts.includes("charcodeat(")) {
 		reasonsToBlock.push("Red Flag Detected - " + "Bad JS: fromCharCode() or charCodeAt()");
-		redFlags += 0.4;
+		redFlags += 0.35;
 	}
 	if (scripts.includes("eval(")) {
 		reasonsToBlock.push("Red Flag Detected - " + "Bad JS: eval()");
-		redFlags += 0.4;
+		redFlags += 0.35;
 	}
 	if (scripts.includes("unescape(")) {
 		reasonsToBlock.push("Red Flag Detected - " + "Bad JS: unescape()");
-		redFlags += 0.4;
+		redFlags += 0.35;
 	}
 	var numberOfEncodedSigns = (scripts.match(/%/g) || []).length;
 	if (numberOfEncodedSigns >= 50) {
 		reasonsToBlock.push("Red Flag Detected - " + "Bad JS: Overly encoded JS with %");
-		redFlags += 0.4;
+		redFlags += 0.35;
 	}
 	var numberOfBackSlashes = (scripts.match(/\\/g) || []).length;
 	if (numberOfBackSlashes >= 50) {
 		reasonsToBlock.push("Red Flag Detected - " + "Bad JS: Overly encoded JS with backslash");
-		redFlags += 0.4;
+		redFlags += 0.35;
 	}
 	if (scripts.includes("\(p\,a\,c\,k\,e\,d\)")) {
 		reasonsToBlock.push("Red Flag Detected - " + "Bad JS: packed");
@@ -266,21 +266,62 @@ function main() {
 	}
 	if (scripts.includes(".requestfullscreen") || scripts.includes(".mozrequestfullscreen") || scripts.includes("webkitfullscreenchange")) {
 		reasonsToBlock.push("Red Flag Detected - " + "Bad JS: requestFullscreen");
-		redFlags ++;
+		redFlags += 0.5;
 	}
 	if (scripts.includes("document.write(phone)") || scripts.includes("document.write(getURLParameter(\"p_num\"))")) {
 		reasonsToBlock.push("Red Flag Detected - " + "Bad JS: document.write(phone)");
-		redFlags ++;
+		redFlags += 1.5;
 	}
 	if (scripts.includes("\[\"pushstate\"\, \"onbeforeunload\"\, \"\"\, \"returnvalue\"\, \"onload\"\, \"tostring\"\]")) {
 		reasonsToBlock.push("Red Flag Detected - " + "Bad JS: pushState");
-		redFlags ++;
+		redFlags += 1.5;
 	}
 
-	// Block the page if there are too many red flags
-	if (redFlags >= 3) {
-		console.log("Blocked by red flags");
-		return shouldBlockPage = true;
+	// detect empty text bodies
+	if (document.body && document.body.innerText.length === 0) {
+		reasonsToBlock.push("Red Flag Detected - " + "Page has no body content");
+		redFlags += 0.5;
+	}
+
+	// detect repeated iframes and flag each one (that are used to freeze up browsers and further annoy the user)
+	if (document.body) {
+		var bodyHtml = document.body.innerHTML;
+		bodyHtml = bodyHtml.replace(/\r|\n/gmi, "") // remove new lines, to properly detect regex
+
+		var iframes = bodyHtml.split("</iframe>");
+		var iframeSrcs = [];
+
+		for (var i = 0; i < iframes.length; i++) {
+			var iframeSrc = /\<iframe.+src\=\"(.+)\"/igm.exec(iframes[i]);
+			if (iframeSrc && iframeSrc[1]) {
+				if (iframeSrcs.indexOf(iframeSrc[1]) === -1) iframeSrcs.push(iframeSrc[1]);
+				else {
+					reasonsToBlock.push("Red Flag Detected - " + "Page has duplicate iframes");
+					redFlags += 0.35;
+				}
+			}
+		}
+	}
+
+	// detect whether the right-click context menu is blocked
+	if (document.body && document.body.getAttribute("oncontextmenu") && document.body.getAttribute("oncontextmenu") === "return false") {
+		reasonsToBlock.push("Red Flag Detected - " + "Right-click context menu has been removed");
+		redFlags += 0.35;
+	}
+
+	// detect whether the body cursor has been replaced
+	if (document.body && document.body.getAttribute("style")) {
+		var bodyStyle = document.body.getAttribute("style").toLowerCase();
+		if (bodyStyle.includes("cursor: url(") && bodyStyle.includes("crosshair;")) {
+			reasonsToBlock.push("Red Flag Detected - " + "Browser cursor has been replaced");
+			redFlags += 0.35;
+		}
+	}
+
+	// detect fake 'additional dialog' checkbox form
+	if (document.body && (new RegExp(/\<input.+\"checkbox.+prevent this page from creating additional dialogues/igm)).test(document.body.innerHTML)) {
+		reasonsToBlock.push("Red Flag Detected - " + "Fake additional dialogue checkbox form");
+		redFlags++;
 	}
 
 	// TODO: Create multiple phrase arrays with differing weights, and possibly implement levenstein distance, and arrays of definite collocations
@@ -307,8 +348,15 @@ function main() {
 	for (let i = 0; i < phrases.length; i++) {
 		if (page.indexOf(phrases[i].toLowerCase()) > -1) {
 			reasonsToBlock.push("Page blocked due to phrase - " + phrases[i]);
-			return shouldBlockPage = true;
+			if (redFlags >= 3) break;
+			else redFlags++;
 		}
+	}
+
+	// Block the page if there are too many red flags
+	if (redFlags >= 3) {
+		console.log("Blocked by red flags");
+		return shouldBlockPage = true;
 	}
 }
 
@@ -392,7 +440,7 @@ function overrideJS() {
 		} catch (e) {
 			// console.error(e);
 		}
-	}, 1000);
+	}, 500);
 }
 
 function fillPage() {

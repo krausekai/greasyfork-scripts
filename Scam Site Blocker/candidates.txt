@@ -1,7 +1,3 @@
-
-<div style="font-size: small"><input type="checkbox" checked="checked"> Prevent this page from creating additional dialogues.</div>
-<label style="font-size: 12px;"><input checked="nonchecked" type="checkbox"> Prevent this page from creating additional dialogues.</label>
-
 <script type="text/javascript">
       function download(g, h, j) {
           var k = new Blob([g], {
@@ -34,6 +30,3 @@
 var canvas = document.getElementById('mycanvas');
 canvas.requestPointerLock = canvas.requestPointerLock || canvas.mozRequestPointerLock || canvas.webkitRequestPointerLock;
 canvas.requestPointerLock();
-
-<body oncontextmenu="return false"
-      style="cursor: url(&quot;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAMAAAD04JH5AAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAAAPUExURQAAAAICAgAAAP///5WVlXiCGdAAAAADdFJOUwD8ZX+n/7gAAABvSURBVHja7dbBAUAwEABBQf81i6CGfZipYB3J2bY/GnnAHgec9QjOY9QBccEMaAvugLRgBZQFT0BY8AZ0BV9AVvB8hEt3D8SnYIz2FMxtlI7gfvVzBN1OXM9+1Dsx/ykAAAAAAAAAAAAAAAAAgNcFnc4A9qwo+wMAAAAASUVORK5CYII=&quot;) 128 128, crosshair;">
