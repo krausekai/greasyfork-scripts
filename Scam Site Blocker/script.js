@@ -357,8 +357,8 @@ function main() {
 	for (let i = 0; i < phrases.length; i++) {
 		if (page.indexOf(phrases[i].toLowerCase()) > -1) {
 			reasonsToBlock.push("Page blocked due to phrase - " + phrases[i]);
+			redFlags++;
 			if (redFlags >= 3) break;
-			else redFlags++;
 		}
 	}
 
