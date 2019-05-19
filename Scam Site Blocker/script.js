@@ -202,11 +202,11 @@ function main() {
 	}
 
 	// flag if an autoplay audio tag is present
-	if (document.head && document.head.innerHTML.toLowerCase().match("<audio.+autoplay=(.|)(\"|\'|)autoplay")) {
+	if (document.head && document.head.innerHTML.toLowerCase().match("<(audio|source).+src=(.|)(\"|\').+\.(mp3|mpga|aac|ogg).+>")) {
 		reasonsToBlock.push("Red Flag Detected - " + "Autoplaying Audio in Page Head");
 		redFlags++;
 	}
-	if (document.body && document.body.innerHTML.toLowerCase().match("<audio.+autoplay=(.|)(\"|\'|)autoplay")) {
+	if (document.body && document.body.innerHTML.toLowerCase().match("<(audio|source).+src=(.|)(\"|\').+\.(mp3|mpga|aac|ogg).+>")) {
 		reasonsToBlock.push("Red Flag Detected - " + "Autoplaying Audio in Page Body");
 		redFlags++;
 	}
@@ -242,6 +242,10 @@ function main() {
 		reasonsToBlock.push("Red Flag Detected - " + "Bad JS: unescape()");
 		redFlags += 0.35;
 	}
+	if (scripts.includes("smat = unescape(")) {
+		reasonsToBlock.push("Red Flag Detected - " + "Bad JS: unescape()");
+		redFlags += 1.5;
+	}
 	var numberOfEncodedSigns = (scripts.match(/%/g) || []).length;
 	if (numberOfEncodedSigns >= 50) {
 		reasonsToBlock.push("Red Flag Detected - " + "Bad JS: Overly encoded JS with %");
@@ -268,6 +272,10 @@ function main() {
 		reasonsToBlock.push("Red Flag Detected - " + "Bad JS: requestFullscreen");
 		redFlags += 0.5;
 	}
+	if (scripts.includes("window.setInterval(function(){msg_ff(")) {
+		reasonsToBlock.push("Red Flag Detected - " + "Bad JS: setInterval with likely bad function name");
+		redFlags += 1.0;
+	}
 	if (scripts.includes("document.write(phone)") || scripts.includes("document.write(getURLParameter(\"p_num\"))")) {
 		reasonsToBlock.push("Red Flag Detected - " + "Bad JS: document.write(phone)");
 		redFlags += 1.5;
@@ -284,7 +292,6 @@ function main() {
 		reasonsToBlock.push("Red Flag Detected - " + "Bad JS: setInterval with window.alert");
 		redFlags += 1.5;
 	}
-
 
 	// detect empty text bodies
 	if (document.body && document.body.innerText.length === 0) {
@@ -321,7 +328,7 @@ function main() {
 	// detect whether the body cursor has been replaced
 	if (document.body && document.body.getAttribute("style")) {
 		var bodyStyle = document.body.getAttribute("style").toLowerCase();
-		if (bodyStyle.includes("cursor: url(") && bodyStyle.includes("crosshair;")) {
+		if (bodyStyle.includes("cursor: url(")) {
 			reasonsToBlock.push("Red Flag Detected - " + "Browser cursor has been replaced");
 			redFlags += 0.35;
 		}
