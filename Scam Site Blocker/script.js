@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Scam Site Blocker
 // @namespace    blockWinScamSites
-// @version      6.3
+// @version      6.5
 // @description  Block potential windows and mac scam site popups and redirects
 // @author       Kai Krause <kaikrause95@gmail.com>
 // @include      *
@@ -97,6 +97,7 @@ var reasonsToBlock = [];
 function main() {
 	if (shouldBlockPage) return;
 
+	redFlags = 0;
 	reasonsToBlock = [];
 
 	// Block bad URL terms
@@ -239,13 +240,13 @@ function main() {
 		reasonsToBlock.push("Red Flag Detected - " + "Bad JS: eval()");
 		redFlags += 0.35;
 	}
-	if (scripts.includes("unescape(")) {
-		reasonsToBlock.push("Red Flag Detected - " + "Bad JS: unescape()");
-		redFlags += 0.35;
-	}
 	if (scripts.includes("smat = unescape(")) {
 		reasonsToBlock.push("Red Flag Detected - " + "Bad JS: unescape()");
 		redFlags += 1.5;
+	}
+	if (scripts.includes("unescape(")) {
+		reasonsToBlock.push("Red Flag Detected - " + "Bad JS: unescape()");
+		redFlags += 0.35;
 	}
 	var numberOfEncodedSigns = (scripts.match(/%/g) || []).length;
 	if (numberOfEncodedSigns >= 50) {
@@ -428,6 +429,7 @@ function overrideJS() {
 	document.oncontextmenu = null;
 	document.onmousedown = null;
 	document.onmouseup = null;
+	document.onclick = null;
 
 	if (window.jQuery) {
 		$ = null;
@@ -444,9 +446,9 @@ function overrideJS() {
 	/* IE/Edge */
 	if (elem.msRequestFullscreen) elem.msRequestFullscreen = null;
 
-	// Exit fullscreen functions
 	setInterval(() => {
 		try {
+			// Exit fullscreen functions
 			if (document.exitFullscreen) document.exitFullscreen();
 			// Firefox
 			if (document.mozCancelFullScreen) document.mozCancelFullScreen();
@@ -454,6 +456,10 @@ function overrideJS() {
 			if (document.webkitExitFullscreen) document.webkitExitFullscreen();
 			// IE/Edge
 			if (document.msExitFullscreen) document.msExitFullscreen();
+
+			// Exist mouse lock
+			document.exitPointerLock = document.exitPointerLock || document.mozExitPointerLock || document.webkitExitPointerLock;
+			document.exitPointerLock();
 		} catch (e) {
 			// console.error(e);
 		}
@@ -472,9 +478,8 @@ function fillPage() {
 	var new_element = old_element.cloneNode(true);
 	old_element.parentNode.replaceChild(new_element, old_element);
 
-	// reset styling on the body element
-	document.body.className = "";
-	document.body.style = "";
+	// remove attributes from the body
+	while(document.body.attributes.length > 0) document.body.removeAttribute(document.body.attributes[0].name);
 
 	// rewrite the document body contents with our warning message
 	document.body.innerHTML = "<center><h2>Suspicious Site Blocked by <a href='#' id='authorlink' style='color:#F2F2F2;'><u>Scam Site Blocker</u></a></h2><br /></center>";
