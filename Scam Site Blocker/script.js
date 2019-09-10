@@ -9,6 +9,7 @@
 // @grant        GM_getValue
 // @grant        GM_unsafeWindow
 // @run-at       document-start
+// @noframes
 // ==/UserScript==
 
 // ---------------------
