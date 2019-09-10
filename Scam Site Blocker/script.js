@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Scam Site Blocker
 // @namespace    blockWinScamSites
-// @version      6.8
+// @version      6.9
 // @description  Block potential windows and mac scam site popups and redirects
 // @author       Kai Krause <kaikrause95@gmail.com>
 // @include      *
