@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Scam Site Blocker
 // @namespace    blockWinScamSites
-// @version      6.9
+// @version      7.0
 // @description  Block potential windows and mac scam site popups and redirects
 // @author       Kai Krause <kaikrause95@gmail.com>
 // @include      *
@@ -370,10 +370,10 @@ function main() {
 	if (document.body) {
 		let prevRedFlags = redFlags;
 		var bodyHtml = document.body.innerHTML.toLowerCase();
-		if (bodyHtml.indexOf("teamviewer.exe")) redFlags += 0.5;
-		if (bodyHtml.indexOf("ultraviewer.exe")) redFlags += 0.5;
-		if (bodyHtml.indexOf("anydesk.exe")) redFlags += 0.5;
-		if (bodyHtml.indexOf("supremo.exe")) redFlags += 0.5;
+		if (bodyHtml.indexOf("teamviewer.exe") > -1) redFlags += 0.5;
+		if (bodyHtml.indexOf("ultraviewer.exe") > -1) redFlags += 0.5;
+		if (bodyHtml.indexOf("anydesk.exe") > -1) redFlags += 0.5;
+		if (bodyHtml.indexOf("supremo.exe") > -1) redFlags += 0.5;
 		if (redFlags > prevRedFlags) reasonsToBlock.push("Red Flag Detected - " + "Directly linking to remote connection executables");
 	}
 
