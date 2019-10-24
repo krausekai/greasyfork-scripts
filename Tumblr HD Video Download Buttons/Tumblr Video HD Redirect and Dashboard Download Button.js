@@ -2,7 +2,7 @@
 // @name         Tumblr HD Video Download Buttons
 // @namespace    TumblrVideoReszr
 // @description  Automatically redirect Tumblr video links to raw HD versions, and display a download button below videos
-// @version      3.0
+// @version      3.1
 // @author       Kai Krause <kaikrause95@gmail.com>
 // @match        http://*.tumblr.com/*
 // @match        https://*.tumblr.com/*
@@ -15,6 +15,7 @@
 // https://vt.media.tumblr.com/tumblr_ID_NUM.mp4
 // https://vtt.tumblr.com/tumblr_ID_NUM.mp4
 // https://vt.tumblr.com/tumblr_ID_NUM.mp4
+// https://ve.tumblr.com/tumblr_ID_NUM.mp4
 
 var loc = location.toString();
 
@@ -62,6 +63,25 @@ function dynamicScroll (f) {
 	}), false);
 }
 
+function fixVideoUrl(videoURL) {
+	videoURL = videoURL.replace(/\d+(?=\.media)/, 'vt');
+	videoURL = videoURL.replace(/[^_]*$/, '');
+	videoURL = videoURL.replace(/_$/, '.mp4');
+	return videoURL;
+}
+
+function createBtn(videoURL) {
+	// Create the button
+	var downloadButton = document.createElement('a');
+	downloadButton.innerText = 'Download This Video (HD)';
+	// Set and style the download button
+	downloadButton.setAttribute('class', 'videoDownloadButtonStyle_kk');
+	downloadButton.setAttribute('href', videoURL);
+	downloadButton.setAttribute('target', '_blank');
+	downloadButton.setAttribute('download', videoURL);
+	return downloadButton;
+}
+
 // ----------------------------------------
 // DASHBOARD BUTTONS
 // ----------------------------------------
@@ -90,20 +110,12 @@ function dashboardDownloadButtons() {
 				// Otherwise, use the video preview image url
 				else if (videos[a].poster) {
 					videoURL = videos[a].poster;
-					videoURL = videoURL.replace(/\d+(?=\.media)/, 'vt');
-					videoURL = videoURL.replace(/[^_]*$/, '');
-					videoURL = videoURL.replace(/_$/, '.mp4');
+					videoURL = fixVideoUrl(videoURL);
 				} else {
 					continue;
 				}
 
-				// Create the button
-				var downloadButton = document.createElement('a');
-				downloadButton.innerText = 'Download This Video (HD)';
-				// Set and style the download button
-				downloadButton.setAttribute('class', 'videoDownloadButtonStyle_kk');
-				downloadButton.setAttribute('href', videoURL);
-				downloadButton.setAttribute('target', '_blank');
+				var downloadBtn = createBtn(videoURL);
 
 				var belowVideo = "";
 				// reblogged videos
@@ -119,7 +131,7 @@ function dashboardDownloadButtons() {
 					if (crtVideo.hasAttribute("data-crt-video")) belowVideo = crtVideo;
 				}*/
 				if (!belowVideo) belowVideo = posts[i].getElementsByClassName('post_body')[0];
-				belowVideo.appendChild(downloadButton);
+				belowVideo.appendChild(downloadBtn);
 				// consider displaying the button above videos, due to tumblr changes and the problem of displaying it below videos
 				//belowVideo.insertBefore(downloadButton, belowVideo.childNodes[0]);
 			}
@@ -146,6 +158,10 @@ var eDisplay = false;
 function req (videoNum, video) {
 	GM_xmlhttpRequest({
 		url: video,
+		headers: {
+			":Authority": "www.tumblr.com",
+			"Referer": location.href
+		},
 		method: 'GET',
 		onload: function(response) {
 			if (response.status == '200' && response.responseText) {
@@ -164,6 +180,7 @@ function req (videoNum, video) {
 						window.alert("There was a problem embedding video download buttons. Please report this at the below site. （動画のダウンロードボタンの埋め込みに問題が発生しました。下のサイトまで報告してください。）\n\nhttps://greasyfork.org/en/scripts/32038-tumblr-hd-video-download-buttons\n\n" + "The problem is (発生した問題は):\n" + e);
 						eDisplay = true;
 					}
+					console.error(e);
 				}
 			}
 		}
@@ -194,14 +211,8 @@ function embedBlogDownloadButtons (videoNum, videoURL) {
 	var frames = document.getElementsByTagName("iframe");
 	var frame = frames[videoNum];
 	var frameParent = frame.parentNode;
-	// Create the button
-	var downloadButton = document.createElement('a');
-	downloadButton.innerText = 'Download This Video (HD)';
-	// Set and style the download button
-	downloadButton.setAttribute('class', 'videoDownloadButtonStyle_kk');
-	downloadButton.setAttribute('href', videoURL);
-	downloadButton.setAttribute('target', '_blank');
-	frameParent.appendChild(downloadButton);
+	var downloadBtn = createBtn(videoURL);
+	frameParent.appendChild(downloadBtn);
 }
 if (location.hostname.includes('tumblr.com') && location.hostname != 'tumblr.com') {
 	window.addEventListener("DOMContentLoaded", function load() {
