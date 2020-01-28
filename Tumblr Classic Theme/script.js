@@ -2,7 +2,7 @@
 // @name         Tumblr Classic Blue
 // @namespace    tumblrClassicTheme_kk
 // @description  Change Tumblr's blue to classic blue
-// @version      1.6
+// @version      1.8
 // @author       Kai Krause <kaikrause95@gmail.com>
 // @match        http://*.tumblr.com/*
 // @match        https://*.tumblr.com/*
@@ -16,60 +16,75 @@ var newBaseCSS = ".tab_notice .tab_notice_value{color:#36465D!important}.tab-not
 
 var newBaseCSS_kk = document.createElement("style");
 newBaseCSS_kk.innerText = newBaseCSS;
-document.head.appendChild(newBaseCSS_kk);
+if (document.head) document.head.appendChild(newBaseCSS_kk);
+
+let intA = setInterval(() => {
+	if (document.head) {
+		document.head.appendChild(newBaseCSS_kk);
+		clearInterval(intA);
+	}
+}, 1);
 
 // DYNAMICALLY REPLACE BASE BLUE COLOR WITH CLASSIC BLUE, FOR IF ABOVE FAILS
 
 var backgroundBlues = ["rgb(0, 25, 53)", "rgba(0, 25, 53, 0)", "001935"];
-var classicBlueBackgroundCSS = ".classicBlueBackground_KK{background-color: #36465D !important;}";
+var backgroundBluesTransparent = ["rgba(0, 25, 53, 0.95)"];
+var classicBlueBackgroundCSS = ".classicBlueBackground_KK{background-color: rgb(54, 70, 93) !important;} .classicBlueBackgroundTransparent_KK{background-color: rgba(54, 70, 93, 0.99) !important;}";
 
 var classicBlueBackground_KK = document.createElement("style");
 classicBlueBackground_KK.innerText = classicBlueBackgroundCSS;
-document.head.appendChild(classicBlueBackground_KK);
+if (document.head) document.head.appendChild(classicBlueBackground_KK);
+
+let intB = setInterval(() => {
+	if (document.head) {
+		document.head.appendChild(classicBlueBackground_KK);
+		clearInterval(intB);
+	}
+}, 1);
 
 var cachedElements = [];
-function applyCSS (className) {
+function applyCSS () {
 	var allElements = document.querySelectorAll('*');
 	for (var i = 0; i < allElements.length; i++) {
 		var element = allElements[i];
 		if (cachedElements.indexOf(element) > -1) continue;
 		cachedElements.push(element);
-		setCSS(element, className);
+		setCSS(element);
 	}
 }
 
-function setCSS(element, className) {
+function setCSS(element) {
 	setTimeout(function(){
 		var elementComputed = window.getComputedStyle(element, null);
 		var background = elementComputed.getPropertyValue("background");
 		var backgroundColor = elementComputed.getPropertyValue("background-color");
 		for (var i = 0; i < backgroundBlues.length; i++) {
 			if (background && background.includes(backgroundBlues[i]) || backgroundColor && backgroundColor.includes(backgroundBlues[i])) {
-				element.classList.add(className);
+				element.classList.add("classicBlueBackground_KK");
+			}
+		}
+		for (var i = 0; i < backgroundBluesTransparent.length; i++) {
+			if (background && background.includes(backgroundBluesTransparent[i]) || backgroundColor && backgroundColor.includes(backgroundBluesTransparent[i])) {
+				element.classList.add("classicBlueBackgroundTransparent_KK");
 			}
 		}
 	}, Math.random(4,12));
 }
 
 // Page Load
-applyCSS("classicBlueBackground_KK");
+applyCSS();
 
-// constantly check for css every second while page is loading
+// constantly check for css changes
 var x = setInterval(() => {
-	applyCSS("classicBlueBackground_KK");
+	applyCSS();
 }, 10);
-
-// delete the above interval after a number of seconds
-setTimeout(() => {
-	clearInterval(x);
-}, 1000);
 
 // Peformant Dynamic function wrapper
 var oldScrollPos = 0;
 window.addEventListener("scroll", (function(){
 	var scrollDifference = Math.abs(oldScrollPos-window.scrollY);
 	if (scrollDifference > 500) {
-		applyCSS("classicBlueBackground_KK");
+		applyCSS();
 		oldScrollPos = window.scrollY;
 	}
 }), false);
