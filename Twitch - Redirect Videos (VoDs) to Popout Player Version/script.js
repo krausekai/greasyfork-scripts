@@ -2,7 +2,7 @@
 // @name         Twitch - Redirect Videos (VoDs) to Popout Player Version
 // @namespace    TwitchVoDPopoutPlayerRedirect
 // @description  Save CPU usage by redirecting Twitch Videos (VoDs) to popout player version
-// @version      1.1
+// @version      1.2
 // @author       Kai Krause <kaikrause95@gmail.com>
 // @match        http://*.twitch.tv/*
 // @match        https://*.twitch.tv/*
@@ -13,13 +13,15 @@ function redirect() {
 	if (!window.location.href.includes("twitch.tv/videos/")) return
 	setTimeout(() => {
 		var videoPath = window.location.href;
-		var video = videoPath.match(/(?:[videos/])(\d+)(?:\?|)/g);
-		video = video[0].replace("?", "");
-		var popoutUrl = "https://player.twitch.tv/?video=v" + video;
+		var video = /(?:[videos/])(\d+)(?:\?|)/g.exec(videoPath);
+		if (video[1]) video = video[1];
+		else video = video[0];
+		video = video.replace("?", "");
+		var popoutUrl = "https://player.twitch.tv/?parent=twitch.tv&player=popout&video=" + video;
 		var timeStamp = videoPath.match(/(?:t=)(\d.+(?:\d[A-Za-z]{1}))/g);
 		if (timeStamp) {
 			timeStamp = timeStamp[0].replace("t=", "");
-			popoutUrl += "&time=" + timeStamp;
+			popoutUrl += "&t=" + timeStamp;
 		}
 		window.location.replace(popoutUrl);
 	}, 1200);

@@ -11,6 +11,14 @@
 // @run-at       document-start
 // ==/UserScript==
 
+// remove Tumblr MITM-like image border advertisement
+
+window.onload = function() {
+	document.body.innerHTML = "<div style='background: url(" + window.location.href + ") no-repeat center center; height:100vh; width:100vw'></div>";
+}
+
+// redirection code
+
 var imageSizes = ['raw', '1280', '540', '500', '400', '250', '100'];
 
 function checkSize(i) {
