@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Scam Site Blocker
 // @namespace    blockWinScamSites
-// @version      7.4
+// @version      7.5
 // @description  Block potential tech support scam popups and redirects
 // @author       Kai Krause <kaikrause95@gmail.com>
 // @include      *
@@ -102,7 +102,7 @@ function main() {
 	reasonsToBlock = [];
 
 	// Block bad URL terms
-	let badUrlTerms = ["call-now1", "call-now2", "firiedge", "ffiedge", "/processdll/", "jook.html", "chr-win-error", "Call-for-SecurityCH-Issues18", "AFUK1404", "systemerror-win-chx", "Call-Windows-Support_IEDGE", "/systemerror-ie-edge/", "XXCall-Windows-Support_IEDGE", "/uyeyeefacsfadafghfgdiedge/", "0CHfdfdfdfddfd99900MK9", "0FIfdfdfdfddfd99900MK9", "0EDfdfdfdfddfd99900MK9", "0MAfdfdfdfddfd99900MK9", "IEfdfdfdfddfd99900MK9", "CN0101010101help", "MNEddjfdsjfhjdhfhjdf7xT", "XMCdhdsbfhgdfhdgf7xe", "Win_helpline100101.hbv", "W898998_99980.nuy", "cedge00001", "EDfdfdfdfd100110dfSSY", "OMED01010101010X0NV", "XEDdhdsbfhgdfhdgf7TLx", "DF10010011010ED7V", "XMCdhdsbfhgdfhdgf7SA", "CHfdfdfdfd100110dfRS", "xxx-virsedge-er-999-zzz", "Ed10010110xyJP", "0EDhdfgdsjfkjsdhfjksdhNN1"];
+	let badUrlTerms = ["call-now1", "call-now2", "firiedge", "ffiedge", "/processdll/", "jook.html", "chr-win-error", "Call-for-SecurityCH-Issues18", "AFUK1404", "systemerror-win-chx", "Call-Windows-Support_IEDGE", "/systemerror-ie-edge/", "XXCall-Windows-Support_IEDGE", "/uyeyeefacsfadafghfgdiedge/", "0CHfdfdfdfddfd99900MK9", "0FIfdfdfdfddfd99900MK9", "0EDfdfdfdfddfd99900MK9", "0MAfdfdfdfddfd99900MK9", "IEfdfdfdfddfd99900MK9", "CN0101010101help", "MNEddjfdsjfhjdhfhjdf7xT", "XMCdhdsbfhgdfhdgf7xe", "Win_helpline100101.hbv", "W898998_99980.nuy", "cedge00001", "EDfdfdfdfd100110dfSSY", "OMED01010101010X0NV", "XEDdhdsbfhgdfhdgf7TLx", "DF10010011010ED7V", "XMCdhdsbfhgdfhdgf7SA", "CHfdfdfdfd100110dfRS", "xxx-virsedge-er-999-zzz", "Ed10010110xyJP", "0EDhdfgdsjfkjsdhfjksdhNN1", "/TChsfsdfjdsfjdsfjVX/", "/0EDfdfdfdfddfd99900V/"];
 	for (let i = 0; i < badUrlTerms.length; i++) {
 		if (location.href.toLowerCase().includes(badUrlTerms[i].toLowerCase())) {
 			reasonsToBlock.push("Blocked by URL keyword: " + badUrlTerms[i])
