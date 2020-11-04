@@ -25,18 +25,18 @@ async function doHide() {
 
 	try {
 		for (var i = 0; i < oldhidebtns.length; i++) {
-            if (!canReload) return;
+			if (!canReload) return;
 
 			if (oldhidebtns[i].innerText.toLowerCase() === "hide") {
 				oldhidebtns[i].click();
-                await wait(waitTime);
+				await wait(waitTime);
 			}
 		}
 
 		var didNewBtnRun = false;
 
 		for (var i = 0; i < newhidebtns.length; i++) {
-            if (!canReload) return;
+			if (!canReload) return;
 
 			newhidebtns[i].click();
 			didNewBtnRun = true;
@@ -47,7 +47,7 @@ async function doHide() {
 
 		await wait(waitTime + 1000);
 
-        if (!canReload) return;
+		if (!canReload) return;
 
 		location.reload();
 	}
@@ -60,7 +60,7 @@ async function doHide() {
 document.addEventListener("keydown", (e) => {
 	if (e.ctrlKey && e.shiftKey && e.keyCode == 82) {
 		e.preventDefault();
-        canReload = true;
+		canReload = true;
 		doHide();
 	}
 	if (e.key.toLowerCase() === "escape" || e.code.toLowerCase() === "escape") {
