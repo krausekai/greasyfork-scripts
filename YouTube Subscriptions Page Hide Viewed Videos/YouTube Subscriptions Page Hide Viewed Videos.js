@@ -2,7 +2,7 @@
 // @name         YouTube Subscriptions Page: Hide Viewed Videos
 // @namespace    hideViewedVideos_kk
 // @description  Once a video is clicked, it will be hidden from the subscription page
-// @version      0.7
+// @version      0.8
 // @author       Kai Krause <kaikrause95@gmail.com>
 // @match        http://*.youtube.com/*
 // @match        https://*.youtube.com/*
@@ -28,17 +28,11 @@ function rightClick(e) {
 }
 
 // Hide 'video is hidden' message from hidden videos
-function autoHideHidden (e) {
-	if (rightClick(e)) return;
-
+function autoHideHidden () {
 	setTimeout(function(){
-		var renderers = document.getElementsByTagName('ytd-grid-video-renderer');
-		for (var i = 0; i < renderers.length; ++i) {
-			var dismissedItem = renderers[i].getAttribute('is-dismissed');
-			if (dismissedItem === "") {
-				renderers[i].remove();
-				break;
-			}
+		let dismissed = document.querySelectorAll('[is-dismissed]');
+		for (let d of dismissed) {
+			d.remove();
 		}
 	}, 4);
 }
@@ -47,39 +41,29 @@ document.addEventListener('mouseup', autoHideHidden);
 // Hide videos when clicked
 function autoHideClicked (e) {
 	if (rightClick(e)) return;
-	var target = getTarget(e);
+	let target = getTarget(e);
 
 	// Disable video channel clicks from removing the video
 	if (target.href && (target.href.includes('/user/') || target.href.includes('/channel/'))) return;
 	// Disable video menu clicks from removing the video, and ignore the thumbnail 'play' animation
-    if (target.tagName === "BUTTON" || target.tagName === "YT-ICON" && target.id !== "play") return;
+	if (target.tagName === "BUTTON" || target.tagName === "YT-ICON" && target.id !== "play") return;
 
 	while (target) {
 		if (target.tagName === "YTD-GRID-VIDEO-RENDERER") {
-
-			var hideMenuButton = target.getElementsByTagName('button')[0];
+			let hideMenuButton = target.getElementsByTagName('button')[0];
 			hideMenuButton.click();
 
 			setTimeout(function() {
 				// Hide the video via the youtube menus, because 1) lazy, 2) easier to update in future
-				var hideMenu = document.getElementsByTagName('ytd-popup-container')[0];
-				var hideButton = hideMenu.getElementsByTagName('yt-formatted-string');
+				let hideMenu = document.querySelector(".ytd-menu-popup-renderer");
+				let hideButton = hideMenu.querySelectorAll("yt-formatted-string");
 				hideButton[hideButton.length-1].click();
-
-				/*
-				for (var i = 0; i < hideButton.length; ++i) {
-					if (hideButton[i].innerHTML === "Hide") {
-						hideButton[i].click();
-						break;
-					}
-				}
-				*/
-
-				autoHideHidden(e);
+				autoHideHidden();
 			}, 4);
 
 			break;
-		} else {
+		}
+		else {
 			target = target.parentNode;
 		}
 	}
