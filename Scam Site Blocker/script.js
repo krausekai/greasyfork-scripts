@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Scam Site Blocker
 // @namespace    blockWinScamSites
-// @version      7.7
+// @version      7.8
 // @description  Block potential tech support scam popups and redirects
 // @author       Kai Krause <kaikrause95@gmail.com>
 // @include      *
@@ -283,6 +283,10 @@ function main() {
 	}
 	if (scripts.includes(".SendKeys(\"F11\")") || scripts.includes(".SendKeys('F11'))")) {
 		reasonsToBlock.push("Red Flag Detected - " + "Bad JS: requestFullscreen");
+		redFlags += 0.5;
+	}
+	if (scripts.includes("requestPointerLock") || scripts.includes("mozRequestPointerLock") || scripts.includes("webkitRequestPointerLock")) {
+		reasonsToBlock.push("Red Flag Detected - " + "Bad JS: requestPointerLock");
 		redFlags += 0.5;
 	}
 	if (scripts.includes("window.setInterval(function(){msg_ff(")) {

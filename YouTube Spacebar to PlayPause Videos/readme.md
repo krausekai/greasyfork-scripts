@@ -1,11 +1,4 @@
-<b>2018 NOTICE: THIS SCRIPT IS NO LONGER COMPATIBLE WITH QUIZLET</b>
-
-When answering questions on Quizlet's 'Write' screen, this script will block the screen from continuing to the next question due to (accidental) clicks and button presses.
-
-Additionally, with this script, it is now possible to control this screen with only the keyboard:
-Enter: Submit answer.
-Space: Override answer.
-
+YouTube has recently broken its spacebar bind, like on alt-tab. This should fix that.
 <hr />
 <b>Support</b>
 	A) Please use the "Feedback" tab above, or

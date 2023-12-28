@@ -2,7 +2,7 @@
 // @name         YouTube Subscriptions Page: Hide Viewed Videos
 // @namespace    hideViewedVideos_kk
 // @description  Once a video is clicked, it will be hidden from the subscription page
-// @version      0.8
+// @version      1.1
 // @author       Kai Krause <kaikrause95@gmail.com>
 // @match        http://*.youtube.com/*
 // @match        https://*.youtube.com/*
@@ -34,9 +34,14 @@ function autoHideHidden () {
 		for (let d of dismissed) {
 			d.remove();
 		}
-	}, 4);
+	}, 100);
 }
 document.addEventListener('mouseup', autoHideHidden);
+
+setInterval(() => {
+	// Disable video preview in new YT subscription page for click target context
+	document.querySelector("#video-preview")?.remove();
+}, 100);
 
 // Hide videos when clicked
 function autoHideClicked (e) {
@@ -49,7 +54,12 @@ function autoHideClicked (e) {
 	if (target.tagName === "BUTTON" || target.tagName === "YT-ICON" && target.id !== "play") return;
 
 	while (target) {
-		if (target.tagName === "YTD-GRID-VIDEO-RENDERER") {
+		// ignore menu on-click
+		if (target?.classList?.contains("yt-icon-button")) {
+			return;
+		}
+
+		if (target?.tagName === "YTD-GRID-VIDEO-RENDERER" || target.id === "dismissible" && target?.classList?.contains("ytd-rich-grid-media")) {
 			let hideMenuButton = target.getElementsByTagName('button')[0];
 			hideMenuButton.click();
 

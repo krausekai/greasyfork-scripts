@@ -1,30 +1,30 @@
 // ==UserScript==
 // @name         Reddit Hide All Posts & Reload Hotkey
 // @namespace    redditposthideandreload_kk
-// @version      1.3
+// @version      1.5
 // @description  Hide all posts & reload page on Ctrl+Shift+R; cancel with Escape
 // @match        https://*.reddit.com/*
 // @grant        none
 // @run-at       document-start
 // ==/UserScript==
 
-var oldhidebtns;
-var newhidebtns;
+let oldhidebtns;
+let newhidebtns;
 
 function getbtns() {
 	oldhidebtns = document.getElementsByTagName("a");
 	newhidebtns = document.getElementsByClassName("icon-hide");
 }
 
-var wait = ms => new Promise(resolve => setTimeout(resolve, ms));
-var waitTime = 350;
-var canReload = true;
+let wait = ms => new Promise(resolve => setTimeout(resolve, ms));
+let waitTime = 500;
+let canReload = true;
 
 async function doHide() {
 	getbtns();
 
 	try {
-		for (var i = 0; i < oldhidebtns.length; i++) {
+		for (let i = 0; i < oldhidebtns.length; i++) {
 			if (!canReload) return;
 
 			if (oldhidebtns[i].innerText.toLowerCase() === "hide") {
@@ -33,10 +33,11 @@ async function doHide() {
 			}
 		}
 
-		var didNewBtnRun = false;
+		let didNewBtnRun = false;
 
-		for (var i = 0; i < newhidebtns.length; i++) {
+		for (let i = 1; i < newhidebtns.length; i++) {
 			if (!canReload) return;
+			i--;
 
 			newhidebtns[i].click();
 			didNewBtnRun = true;
