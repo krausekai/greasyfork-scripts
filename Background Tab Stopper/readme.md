@@ -1,11 +1,12 @@
-Too many websites open? Opening your browser is too slow? Computer fans become too loud? Then try this script!
+This script may improve browser load speed at startup when there are too many browser tabs open.
 
-Working Memory Set of 28 Chrome Tabs (Several Youtube) at Startup
+Working Memory Set (RAM) of 28 Chrome Tabs (Several Youtube) at Startup
 ...Before: 3.83gb
 ...After: 2.46gb
 = 35.74% decrease!
 
-I also recommend "The Great Discarder" on the chrome store.
+I also recommend using browser sleeping tabs / memory saver / tab suspension settings.
+Alternatively, there are tab suspension extensions (e.g. Auto Tab Discard, The Great Discarder).
 
 <hr />
 <b>Support</b>
