@@ -2,7 +2,7 @@
 // @name         Youtube: Spacebar to Play/Pause Videos
 // @namespace    ytSpacePauseKK
 // @description  Force bind the spacebar to play/pause videos
-// @version      1.6
+// @version      1.7
 // @author       Kai Krause <kaikrause95@gmail.com>
 // @match        http://*.youtube.com/*
 // @match        https://*.youtube.com/*
@@ -20,16 +20,21 @@ document.addEventListener("keydown", function onEvent(e) {
 	e.preventDefault();
 	e.stopImmediatePropagation();
 
-	let player = document.querySelector(".html5-video-player");
-	if (player.classList.contains("paused-mode")) cachedMode = "paused-mode";
-	if (player.classList.contains("playing-mode")) cachedMode = "playing-mode";
-	if (player.classList.contains("ended-mode")) cachedMode = "ended-mode";
-
-	setTimeout(() => {
+	if (document.location.hostname == "music.youtube.com") {
+		document.querySelector("#play-pause-button").click();
+	}
+	else {
 		let player = document.querySelector(".html5-video-player");
-		if (player.classList.contains(cachedMode)) {
-			document.querySelector("button.ytp-play-button").click();
-			cachedMode = "";
-		}
-	}, 200);
+		if (player.classList.contains("paused-mode")) cachedMode = "paused-mode";
+		if (player.classList.contains("playing-mode")) cachedMode = "playing-mode";
+		if (player.classList.contains("ended-mode")) cachedMode = "ended-mode";
+
+		setTimeout(() => {
+			let player = document.querySelector(".html5-video-player");
+			if (player.classList.contains(cachedMode)) {
+				document.querySelector("button.ytp-play-button").click();
+				cachedMode = "";
+			}
+		}, 200);
+	}
 });
